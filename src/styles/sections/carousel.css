@@ -1,0 +1,14 @@
+.projects-carousel-section {
+  padding: 72px 24px 96px;
+
+  & .projects-carousel-section__inner {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  & .projects-carousel-section__title {
+    margin: 0 0 24px;
+    font-size: 40px;
+    line-height: 1;
+  }
+}

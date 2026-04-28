@@ -1,0 +1,53 @@
+.hero-section {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.hero-wordmark {
+  position: absolute;
+  inset: 0;
+  z-index: 60;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  pointer-events: none;
+
+  & .hero-wordmark__frame {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: min(95vw, 1120px);
+    aspect-ratio: 1.54 / 1;
+  }
+
+  & .hero-wordmark__ellipse {
+    position: absolute;
+    inset: 6% 16%;
+    border: 2px solid var(--foreground);
+    border-radius: 50%;
+  }
+
+  & .hero-wordmark__title {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    justify-items: center;
+    gap: 0.25rem;
+    margin: 0;
+    color: var(--foreground);
+    font-family: "Exvolar", Arial, Helvetica, sans-serif;
+    line-height: 0.9;
+    text-transform: uppercase;
+  }
+
+  & .hero-wordmark__eyebrow {
+    font-size: clamp(2.375rem, 0.9464rem + 4.5714vw, 4.375rem);
+    font-weight: 400;
+  }
+
+  & .hero-wordmark__name {
+    font-size: clamp(4.375rem, -3.2143rem + 24.2857vw, 15rem);
+    font-weight: 400;
+  }
+}

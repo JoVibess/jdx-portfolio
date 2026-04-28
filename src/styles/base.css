@@ -1,0 +1,49 @@
+@font-face {
+  font-family: "Exvolar";
+  src: url("/fonts/Exvolar.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+:root {
+  --background: #f2f2f2;
+  --foreground: #050505;
+  --surface: rgba(255, 255, 255, 0.36);
+  --border-subtle: rgba(5, 5, 5, 0.16);
+  --text-muted: rgba(5, 5, 5, 0.68);
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: Arial, Helvetica, sans-serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  min-height: 100%;
+  background: var(--background);
+  scrollbar-color: #050505 var(--background);
+}
+
+body {
+  min-height: 100%;
+  margin: 0;
+  background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+::selection {
+  background: #92d8ce;
+  color: #0b0a09;
+}
+
+a {
+  text-decoration: none;
+}
