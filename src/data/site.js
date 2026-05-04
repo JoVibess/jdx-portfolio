@@ -1,5 +1,5 @@
 export const site = {
-  name: "JDX Portfolio",
+  name: "JDX",
   description: "Portfolio immersif avec sculpture 3D fragmentee au scroll.",
   homeHref: "/",
   sections: {

@@ -2,29 +2,31 @@
 
 import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
-import { useEffect, useMemo, useRef } from "react";
-import { Box3, Vector3 } from "three";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
+import { Box3, Plane, Raycaster, Vector2, Vector3 } from "three";
 
 import {
   DEFAULT_GLASS_SETTINGS,
   DRACO_PATH,
-  DRAG_MAX_TILT,
-  DRAG_ROTATION_EASE,
-  DRAG_SPIN_SPEED,
-  DRAG_TILT_STRENGTH,
   FACE_MODEL_URL,
   FRAGMENT_EASE_IN,
   FRAGMENT_EASE_OUT,
   HOVER_CORE,
   HOVER_RADIUS,
+  INTERACTION_PLANE_HEIGHT,
+  INTERACTION_PLANE_WIDTH,
+  INTERACTION_PLANE_Y,
+  INTERACTION_PLANE_Z,
   POINTER_EASE,
 } from "../constants";
-import { clamp, hashName, normalizeModel, smoothstep } from "../lib/fractureMath";
+import { hashName, normalizeModel, smoothstep } from "../lib/fractureMath";
 import { applyGlassSettings, createGlassMaterial } from "../lib/glassMaterial";
 
-export default function FaceModel({ settings }) {
+export default function FaceModel({ onReady, settings }) {
   const fractured = useGLTF(FACE_MODEL_URL, DRACO_PATH);
   const fracturedScene = useMemo(() => fractured.scene.clone(true), [fractured.scene]);
+  const camera = useThree((state) => state.camera);
+  const gl = useThree((state) => state.gl);
   const invalidate = useThree((state) => state.invalidate);
   const stage = useRef(null);
   const modelGroup = useRef(null);
@@ -32,19 +34,75 @@ export default function FaceModel({ settings }) {
   const hoverPoint = useRef(new Vector3(0, 0, 0));
   const hoverTargetPoint = useRef(new Vector3(0, 0, 0));
   const localHoverPoint = useRef(new Vector3(0, 0, 0));
-  const dragActive = useRef(false);
-  const dragStart = useRef({ x: 0, y: 0 });
-  const dragStartRotation = useRef({ x: 0, y: 0 });
-  const dragRotation = useRef({ x: 0, y: 0 });
+  const hasNotifiedReady = useRef(false);
+  const readyElapsed = useRef(0);
+  const onReadyRef = useRef(onReady);
   const material = useRef(null);
   const fragmentMaterials = useRef([]);
+  const raycaster = useRef(new Raycaster());
+  const pointerNdc = useRef(new Vector2());
+  const interactionPlane = useRef(
+    new Plane(new Vector3(0, 0, 1), -INTERACTION_PLANE_Z),
+  );
+  const interactionPoint = useRef(new Vector3());
 
   if (material.current === null) {
     material.current = createGlassMaterial();
   }
 
   useEffect(() => {
+    onReadyRef.current = onReady;
+  }, [onReady]);
+
+  const updatePointerPoint = useCallback((event) => {
+    const rect = gl.domElement.getBoundingClientRect();
+    const pointerX = (event.clientX - rect.left) / rect.width;
+    const pointerY = (event.clientY - rect.top) / rect.height;
+
+    pointerNdc.current.set(pointerX * 2 - 1, -(pointerY * 2 - 1));
+    raycaster.current.setFromCamera(pointerNdc.current, camera);
+
+    const point = raycaster.current.ray.intersectPlane(
+      interactionPlane.current,
+      interactionPoint.current,
+    );
+
+    if (!point) {
+      hoverActive.current = false;
+      return false;
+    }
+
+    const isInside =
+      Math.abs(point.x) <= INTERACTION_PLANE_WIDTH / 2 &&
+      Math.abs(point.y - INTERACTION_PLANE_Y) <= INTERACTION_PLANE_HEIGHT / 2;
+
+    if (!isInside) {
+      hoverActive.current = false;
+      return false;
+    }
+
+    hoverActive.current = true;
+    localHoverPoint.current.copy(point);
+    modelGroup.current?.worldToLocal(localHoverPoint.current);
+    hoverTargetPoint.current.copy(localHoverPoint.current);
+
+    return true;
+  }, [camera, gl.domElement]);
+
+  useLayoutEffect(() => {
     const fractureMaterials = [];
+
+    hoverActive.current = false;
+    hoverPoint.current.set(0, 0, 0);
+    hoverTargetPoint.current.set(0, 0, 0);
+    hasNotifiedReady.current = false;
+    readyElapsed.current = 0;
+
+    if (modelGroup.current) {
+      modelGroup.current.position.set(0, 0, 0);
+      modelGroup.current.rotation.set(0, 0, 0);
+      modelGroup.current.scale.set(1, 1, 1);
+    }
 
     normalizeModel(fracturedScene);
 
@@ -96,13 +154,49 @@ export default function FaceModel({ settings }) {
     });
 
     fragmentMaterials.current = fractureMaterials;
+    invalidate();
 
     return () => {
       fractureMaterials.forEach((fragmentMaterial) => fragmentMaterial.dispose());
       fractureMaterials.length = 0;
       fragmentMaterials.current = [];
     };
-  }, [fracturedScene]);
+  }, [fracturedScene, invalidate]);
+
+  useEffect(() => {
+    const canvas = gl.domElement;
+
+    const handlePointerMove = (event) => {
+      if (!modelGroup.current) {
+        return;
+      }
+
+      if (event.buttons !== 0) {
+        hoverActive.current = false;
+        return;
+      }
+
+      updatePointerPoint(event);
+    };
+
+    const handlePointerLeave = () => {
+      hoverActive.current = false;
+    };
+
+    const handlePointerDown = () => {
+      hoverActive.current = false;
+    };
+
+    canvas.addEventListener("pointermove", handlePointerMove);
+    canvas.addEventListener("pointerdown", handlePointerDown);
+    canvas.addEventListener("pointerleave", handlePointerLeave);
+
+    return () => {
+      canvas.removeEventListener("pointermove", handlePointerMove);
+      canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointerleave", handlePointerLeave);
+    };
+  }, [gl.domElement, updatePointerPoint]);
 
   useEffect(() => {
     fragmentMaterials.current.forEach((fragmentMaterial) => {
@@ -115,28 +209,13 @@ export default function FaceModel({ settings }) {
     invalidate();
   }, [fracturedScene, invalidate]);
 
-  useEffect(() => {
-    const stopDrag = () => {
-      dragActive.current = false;
-    };
-
-    window.addEventListener("pointerup", stopDrag);
-    window.addEventListener("pointercancel", stopDrag);
-
-    return () => {
-      window.removeEventListener("pointerup", stopDrag);
-      window.removeEventListener("pointercancel", stopDrag);
-    };
-  }, []);
-
   useFrame((_, delta) => {
-    if (modelGroup.current) {
-      const rotationEase = Math.min(1, delta * DRAG_ROTATION_EASE);
-
-      modelGroup.current.rotation.x +=
-        (dragRotation.current.x - modelGroup.current.rotation.x) * rotationEase;
-      modelGroup.current.rotation.y +=
-        (dragRotation.current.y - modelGroup.current.rotation.y) * rotationEase;
+    if (!hasNotifiedReady.current) {
+      readyElapsed.current += delta;
+      if (readyElapsed.current >= 1.0) {
+        hasNotifiedReady.current = true;
+        onReadyRef.current?.();
+      }
     }
 
     hoverPoint.current.lerp(
@@ -174,66 +253,6 @@ export default function FaceModel({ settings }) {
 
   return (
     <group ref={stage}>
-      <mesh
-        position={[0, -0.08, 1.04]}
-        onPointerDown={(event) => {
-          event.stopPropagation();
-          if (!modelGroup.current) {
-            return;
-          }
-
-          dragActive.current = true;
-          dragStart.current = { x: event.clientX, y: event.clientY };
-          dragStartRotation.current = {
-            x: modelGroup.current.rotation.x,
-            y: modelGroup.current.rotation.y,
-          };
-          dragRotation.current = dragStartRotation.current;
-          event.target.setPointerCapture?.(event.pointerId);
-        }}
-        onPointerMove={(event) => {
-          event.stopPropagation();
-          if (!modelGroup.current) {
-            return;
-          }
-
-          if (dragActive.current) {
-            const deltaX = event.clientX - dragStart.current.x;
-            const deltaY = event.clientY - dragStart.current.y;
-
-            dragRotation.current = {
-              x: clamp(
-                dragStartRotation.current.x + deltaY * DRAG_TILT_STRENGTH,
-                -DRAG_MAX_TILT,
-                DRAG_MAX_TILT,
-              ),
-              y: dragStartRotation.current.y + deltaX * DRAG_SPIN_SPEED,
-            };
-          }
-
-          hoverActive.current = true;
-          localHoverPoint.current.copy(event.point);
-          modelGroup.current.worldToLocal(localHoverPoint.current);
-          hoverTargetPoint.current.copy(localHoverPoint.current);
-        }}
-        onPointerUp={(event) => {
-          event.stopPropagation();
-          dragActive.current = false;
-          if (modelGroup.current) {
-            dragRotation.current = {
-              x: modelGroup.current.rotation.x,
-              y: modelGroup.current.rotation.y,
-            };
-          }
-          event.target.releasePointerCapture?.(event.pointerId);
-        }}
-        onPointerOut={() => {
-          hoverActive.current = false;
-        }}
-      >
-        <planeGeometry args={[2.2, 3.25]} />
-        <meshBasicMaterial transparent opacity={0} depthWrite={false} />
-      </mesh>
       <group ref={modelGroup}>
         <primitive object={fracturedScene} />
       </group>

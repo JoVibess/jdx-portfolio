@@ -13,6 +13,10 @@
   padding: 24px;
   pointer-events: none;
 
+  & * {
+    pointer-events: none;
+  }
+
   & .hero-wordmark__frame {
     position: relative;
     display: grid;
@@ -24,8 +28,23 @@
   & .hero-wordmark__ellipse {
     position: absolute;
     inset: 6% 16%;
-    border: 2px solid var(--foreground);
-    border-radius: 50%;
+    width: auto;
+    height: auto;
+    color: var(--foreground);
+    overflow: visible;
+  }
+
+  & .hero-wordmark__ellipse-arc {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 4;
+    stroke-linecap: round;
+    stroke-dasharray: 1;
+    stroke-dashoffset: 1;
+  }
+
+  &.hero-wordmark--ready .hero-wordmark__ellipse-arc {
+    animation: heroEllipseDraw 1.35s cubic-bezier(0.76, 0, 0.24, 1) 0.15s forwards;
   }
 
   & .hero-wordmark__title {
@@ -49,5 +68,11 @@
   & .hero-wordmark__name {
     font-size: clamp(4.375rem, -3.2143rem + 24.2857vw, 15rem);
     font-weight: 400;
+  }
+}
+
+@keyframes heroEllipseDraw {
+  to {
+    stroke-dashoffset: 0;
   }
 }
