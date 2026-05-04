@@ -2,6 +2,7 @@
 @import "../../node_modules/lil-gui/dist/lil-gui.css";
 @import "../styles/base.css";
 @import "../styles/sections/hero.css";
+@import "../styles/sections/about.css";
 @import "../styles/sections/carousel.css";
 @import "../styles/features/loader.css";
 @import "../styles/features/projects.css";

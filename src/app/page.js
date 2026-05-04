@@ -1,5 +1,6 @@
 import ProjectsCarouselSection from "@/sections/carousel/ProjectsCarouselSection";
 import FaceScenePreload from "@/features/face-scene/components/FaceScenePreload";
+import AboutSection from "@/sections/about/AboutSection";
 import HeroSection from "@/sections/hero/HeroSection";
 
 export default function Home() {
@@ -7,6 +8,7 @@ export default function Home() {
     <main className="relative min-h-screen overflow-hidden bg-background">
       <FaceScenePreload />
       <HeroSection />
+      <AboutSection />
       <ProjectsCarouselSection />
     </main>
   );

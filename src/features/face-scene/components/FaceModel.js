@@ -8,6 +8,10 @@ import { Box3, Plane, Raycaster, Vector2, Vector3 } from "three";
 import {
   DEFAULT_GLASS_SETTINGS,
   DRACO_PATH,
+  DRAG_MAX_TILT,
+  DRAG_ROTATION_EASE,
+  DRAG_SPIN_SPEED,
+  DRAG_TILT_SPEED,
   FACE_MODEL_URL,
   FRAGMENT_EASE_IN,
   FRAGMENT_EASE_OUT,
@@ -17,9 +21,10 @@ import {
   INTERACTION_PLANE_WIDTH,
   INTERACTION_PLANE_Y,
   INTERACTION_PLANE_Z,
+  MODEL_VISUAL_OFFSET,
   POINTER_EASE,
 } from "../constants";
-import { hashName, normalizeModel, smoothstep } from "../lib/fractureMath";
+import { clamp, hashName, normalizeModel, smoothstep } from "../lib/fractureMath";
 import { applyGlassSettings, createGlassMaterial } from "../lib/glassMaterial";
 
 export default function FaceModel({ onReady, settings }) {
@@ -34,6 +39,10 @@ export default function FaceModel({ onReady, settings }) {
   const hoverPoint = useRef(new Vector3(0, 0, 0));
   const hoverTargetPoint = useRef(new Vector3(0, 0, 0));
   const localHoverPoint = useRef(new Vector3(0, 0, 0));
+  const dragActive = useRef(false);
+  const dragStartPointer = useRef({ x: 0, y: 0 });
+  const dragStartRotation = useRef({ x: 0, y: 0 });
+  const dragTargetRotation = useRef({ x: 0, y: 0 });
   const hasNotifiedReady = useRef(false);
   const readyElapsed = useRef(0);
   const onReadyRef = useRef(onReady);
@@ -95,6 +104,10 @@ export default function FaceModel({ onReady, settings }) {
     hoverActive.current = false;
     hoverPoint.current.set(0, 0, 0);
     hoverTargetPoint.current.set(0, 0, 0);
+    dragActive.current = false;
+    dragStartPointer.current = { x: 0, y: 0 };
+    dragStartRotation.current = { x: 0, y: 0 };
+    dragTargetRotation.current = { x: 0, y: 0 };
     hasNotifiedReady.current = false;
     readyElapsed.current = 0;
 
@@ -171,6 +184,23 @@ export default function FaceModel({ onReady, settings }) {
         return;
       }
 
+      if (dragActive.current) {
+        const deltaX = event.clientX - dragStartPointer.current.x;
+        const deltaY = event.clientY - dragStartPointer.current.y;
+
+        hoverActive.current = false;
+        dragTargetRotation.current = {
+          x: clamp(
+            dragStartRotation.current.x + deltaY * DRAG_TILT_SPEED,
+            -DRAG_MAX_TILT,
+            DRAG_MAX_TILT,
+          ),
+          y: dragStartRotation.current.y + deltaX * DRAG_SPIN_SPEED,
+        };
+        event.preventDefault();
+        return;
+      }
+
       if (event.buttons !== 0) {
         hoverActive.current = false;
         return;
@@ -183,18 +213,65 @@ export default function FaceModel({ onReady, settings }) {
       hoverActive.current = false;
     };
 
-    const handlePointerDown = () => {
+    const stopDrag = (event) => {
+      if (!dragActive.current) {
+        return;
+      }
+
+      dragActive.current = false;
       hoverActive.current = false;
+
+      if (modelGroup.current) {
+        dragTargetRotation.current = {
+          x: modelGroup.current.rotation.x,
+          y: modelGroup.current.rotation.y,
+        };
+      }
+
+      if (
+        event?.pointerId !== undefined &&
+        canvas.hasPointerCapture?.(event.pointerId)
+      ) {
+        canvas.releasePointerCapture(event.pointerId);
+      }
+    };
+
+    const handlePointerDown = (event) => {
+      if (!modelGroup.current || !updatePointerPoint(event)) {
+        hoverActive.current = false;
+        return;
+      }
+
+      hoverActive.current = false;
+      dragActive.current = true;
+      dragStartPointer.current = { x: event.clientX, y: event.clientY };
+      dragStartRotation.current = {
+        x: modelGroup.current.rotation.x,
+        y: modelGroup.current.rotation.y,
+      };
+      dragTargetRotation.current = { ...dragStartRotation.current };
+      if (event.pointerId !== undefined) {
+        canvas.setPointerCapture?.(event.pointerId);
+      }
+      event.preventDefault();
     };
 
     canvas.addEventListener("pointermove", handlePointerMove);
     canvas.addEventListener("pointerdown", handlePointerDown);
+    canvas.addEventListener("pointerup", stopDrag);
+    canvas.addEventListener("pointercancel", stopDrag);
     canvas.addEventListener("pointerleave", handlePointerLeave);
+    window.addEventListener("pointerup", stopDrag);
+    window.addEventListener("pointercancel", stopDrag);
 
     return () => {
       canvas.removeEventListener("pointermove", handlePointerMove);
       canvas.removeEventListener("pointerdown", handlePointerDown);
+      canvas.removeEventListener("pointerup", stopDrag);
+      canvas.removeEventListener("pointercancel", stopDrag);
       canvas.removeEventListener("pointerleave", handlePointerLeave);
+      window.removeEventListener("pointerup", stopDrag);
+      window.removeEventListener("pointercancel", stopDrag);
     };
   }, [gl.domElement, updatePointerPoint]);
 
@@ -210,6 +287,15 @@ export default function FaceModel({ onReady, settings }) {
   }, [fracturedScene, invalidate]);
 
   useFrame((_, delta) => {
+    if (modelGroup.current) {
+      const dragEase = Math.min(1, delta * DRAG_ROTATION_EASE);
+
+      modelGroup.current.rotation.x +=
+        (dragTargetRotation.current.x - modelGroup.current.rotation.x) * dragEase;
+      modelGroup.current.rotation.y +=
+        (dragTargetRotation.current.y - modelGroup.current.rotation.y) * dragEase;
+    }
+
     if (!hasNotifiedReady.current) {
       readyElapsed.current += delta;
       if (readyElapsed.current >= 1.0) {
@@ -252,7 +338,7 @@ export default function FaceModel({ onReady, settings }) {
   });
 
   return (
-    <group ref={stage}>
+    <group ref={stage} position={MODEL_VISUAL_OFFSET}>
       <group ref={modelGroup}>
         <primitive object={fracturedScene} />
       </group>

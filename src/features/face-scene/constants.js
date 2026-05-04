@@ -3,11 +3,16 @@ export const FACE_MODEL_URL = "/models/face/fractured-face.glb";
 export const PAGE_BACKGROUND = "#f2f2f2";
 
 export const MODEL_HEIGHT = 2.25;
+export const MODEL_VISUAL_OFFSET = [0, 0, 0];
 export const HOVER_RADIUS = 1.05;
 export const HOVER_CORE = 0.35;
 export const POINTER_EASE = 8;
 export const FRAGMENT_EASE_IN = 8;
 export const FRAGMENT_EASE_OUT = 7;
+export const DRAG_ROTATION_EASE = 14;
+export const DRAG_SPIN_SPEED = 0.006;
+export const DRAG_TILT_SPEED = 0.0014;
+export const DRAG_MAX_TILT = 0.2;
 export const INTERACTION_PLANE_WIDTH = 2.2;
 export const INTERACTION_PLANE_HEIGHT = 3.25;
 export const INTERACTION_PLANE_Y = -0.08;
