@@ -1,123 +1,95 @@
 .hero-section {
+  --hero-header-height: 6.25rem;
+  --hero-panel-height: clamp(23.75rem, 10.6298rem + 41.9847vw, 37.5rem);
+  --hero-profile-overlap: 34rem;
   position: relative;
-  min-height: 100vh;
-  overflow: hidden;
+  min-height: calc(var(--hero-header-height) + var(--hero-panel-height));
+  overflow: visible;
+  background: var(--background);
 }
 
-.hero-wordmark {
-  position: absolute;
-  inset: 0;
-  z-index: 60;
+.hero-section__header {
+  position: relative;
+  z-index: 70;
   display: grid;
   place-items: center;
-  padding: 24px;
-  pointer-events: none;
+  height: var(--hero-header-height);
+  background: var(--background);
+}
 
-  & * {
-    pointer-events: none;
-  }
+.hero-section__logo {
+  display: block;
+  width: clamp(6.5rem, 9vw, 9.25rem);
+  line-height: 0;
+}
 
-  & .hero-wordmark__frame {
-    position: relative;
-    display: grid;
-    place-items: center;
-    width: min(95vw, 1120px);
-    aspect-ratio: 1.54 / 1;
-  }
+.hero-section__logo-image {
+  display: block;
+  width: 100%;
+  height: auto;
+}
 
-  & .hero-wordmark__ellipse {
-    position: absolute;
-    inset: 6% 16%;
-    width: auto;
-    height: auto;
-    color: var(--foreground);
-    overflow: visible;
-  }
+.hero-section__panel {
+  position: relative;
+  z-index: 10;
+  height: var(--hero-panel-height);
+  overflow: hidden;
+  background-image: url("/image/webp/background-hero.webp");
+  background-position: center;
+  background-size: cover;
+}
 
-  & .hero-wordmark__ellipse-arc {
-    fill: none;
-    stroke: currentColor;
-    stroke-width: 4;
-    stroke-linecap: round;
-    stroke-dasharray: 1;
-    stroke-dashoffset: 1;
-  }
-
-  &.hero-wordmark--ready .hero-wordmark__ellipse-arc {
-    animation: heroEllipseDraw 1.35s cubic-bezier(0.76, 0, 0.24, 1) 0.40s forwards;
-  }
-
-  & .hero-wordmark__star {
-    position: absolute;
-    left: 50%;
-    z-index: 2;
-    width: clamp(2rem, 3.8vw, 3.375rem);
-    aspect-ratio: 54 / 61;
-    background: var(--foreground);
-    -webkit-mask: url("/image/svg/hero-star.svg") center / contain no-repeat;
-    mask: url("/image/svg/hero-star.svg") center / contain no-repeat;
-  }
-
-  & .hero-wordmark__star--top {
-    top: 6.3%;
-    opacity: 0;
-    transform: translate(-50%, -50%) scale(0.86);
-  }
-
-  &.hero-wordmark--ready .hero-wordmark__star--top {
-    animation: heroTopStarReveal 0.32s cubic-bezier(0.22, 1, 0.36, 1) 0.34s forwards;
-  }
-
-  & .hero-wordmark__star--bottom {
-    bottom: 6.3%;
-    opacity: 0;
-    transform: translate(-50%, 50%) rotate(180deg) scale(0.86);
-  }
-
-  &.hero-wordmark--ready .hero-wordmark__star--bottom {
-    animation: heroBottomStarReveal 0.32s cubic-bezier(0.22, 1, 0.36, 1) 1.7s forwards;
-  }
-
-  & .hero-wordmark__title {
-    position: relative;
-    z-index: 3;
-    display: grid;
-    justify-items: center;
-    gap: 0.25rem;
-    margin: 0;
-    color: var(--foreground);
-    font-family: "Exvolar", Arial, Helvetica, sans-serif;
-    line-height: 0.9;
-    text-transform: uppercase;
-  }
-
-  & .hero-wordmark__eyebrow {
-    font-size: clamp(2.375rem, 0.9464rem + 4.5714vw, 4.375rem);
-    font-weight: 400;
-  }
-
-  & .hero-wordmark__name {
-    font-size: clamp(4.375rem, -3.2143rem + 24.2857vw, 15rem);
-    font-weight: 400;
+.hero-section__title {
+  position: absolute;
+  left: clamp(2rem, 4vw, 4rem);
+  top: 43%;
+  z-index: 2;
+  display: grid;
+  margin: 0;
+  color: #ffffff;
+  font-family: var(--font-roc-grotesk-wide) !important;
+  font-size: clamp(4.35rem, 7vw, 6.25rem);
+  font-weight: 500;
+  line-height: 0.86;
+  letter-spacing: -0.055em;
+  text-transform: uppercase;
+  transform: translateY(-50%);
+  @media(max-width: 1570px) {
+    top: 33%;
   }
 }
 
-@keyframes heroEllipseDraw {
-  to {
-    stroke-dashoffset: 0;
-  }
+.hero-section__intro {
+  margin-bottom: 0.15em;
+  font-size: clamp(2rem, 2.8vw, 2.75rem);
+  letter-spacing: -0.04em;
+  line-height: 1;
+  text-transform: none;
 }
 
-@keyframes heroTopStarReveal {
-  to {
-    opacity: 1;
-    transform: translate(-50%, -50%) scale(1);
-  }
+.face-scene-stage {
+  position: absolute;
+  top: var(--hero-header-height);
+  left: 0;
+  right: 0;
+  z-index: 50;
+  height: calc(var(--hero-panel-height) + var(--hero-profile-overlap));
+  width: 100%;
 }
 
-@keyframes heroBottomStarReveal {
-  to {
-    opacity: 1;
-    transform: translate(-50%, 50%) rotate(180deg) scale(1);
+@media (max-width: 860px) {
+  .hero-section {
+    --hero-header-height: 5rem;
+    --hero-profile-overlap: 27rem;
+  }
+
+  .hero-section__title {
+    left: 1.25rem;
+    top: 38%;
+    font-size: clamp(3.25rem, 13vw, 5rem);
+  }
+
+  .hero-section__intro {
+    font-size: clamp(1.6rem, 6vw, 2.2rem);
   }
 }

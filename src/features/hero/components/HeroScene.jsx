@@ -3,24 +3,30 @@
 import dynamic from "next/dynamic";
 import { useCallback, useState } from "react";
 
-import HeroWordmark from "@/features/hero/components/HeroWordmark";
+import { DEFAULT_SCENE_SETTINGS } from "@/features/face-scene/constants";
 import LoaderOverlay from "@/features/loader/LoaderOverlay";
+import DebugGui from "@/utils/DebugGui";
 
 const FractureStage = dynamic(
   () => import("@/features/face-scene/components/FractureStage"),
   { ssr: false },
 );
 
-export default function HeroScene({ eyebrow, title }) {
+export default function HeroScene() {
   const [isModelReady, setIsModelReady] = useState(false);
+  const [settings, setSettings] = useState(DEFAULT_SCENE_SETTINGS);
   const handleModelReady = useCallback(() => {
     setIsModelReady(true);
   }, []);
 
   return (
     <>
-      <FractureStage isVisible={isModelReady} onModelReady={handleModelReady} />
-      <HeroWordmark eyebrow={eyebrow} isReady={isModelReady} title={title} />
+      <DebugGui onChange={setSettings} />
+      <FractureStage
+        isVisible={isModelReady}
+        onModelReady={handleModelReady}
+        settings={settings}
+      />
       <LoaderOverlay isVisible={!isModelReady} />
     </>
   );

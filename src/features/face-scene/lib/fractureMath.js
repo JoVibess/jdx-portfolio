@@ -23,6 +23,11 @@ export function hashName(name) {
 }
 
 export function normalizeModel(root) {
+  root.position.set(0, 0, 0);
+  root.rotation.set(0, 0, 0);
+  root.scale.set(1, 1, 1);
+  root.updateMatrixWorld(true);
+
   const box = new Box3().setFromObject(root);
   const center = box.getCenter(new Vector3());
   const size = box.getSize(new Vector3());

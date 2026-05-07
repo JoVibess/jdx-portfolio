@@ -3,10 +3,9 @@
 import { useGLTF } from "@react-three/drei";
 import { useFrame, useThree } from "@react-three/fiber";
 import { useCallback, useEffect, useLayoutEffect, useMemo, useRef } from "react";
-import { Box3, Plane, Raycaster, Vector2, Vector3 } from "three";
+import { Box3, MathUtils, MeshStandardMaterial, Raycaster, Vector2, Vector3 } from "three";
 
 import {
-  DEFAULT_GLASS_SETTINGS,
   DRACO_PATH,
   DRAG_MAX_TILT,
   DRAG_ROTATION_EASE,
@@ -17,19 +16,14 @@ import {
   FRAGMENT_EASE_OUT,
   HOVER_CORE,
   HOVER_RADIUS,
-  INTERACTION_PLANE_HEIGHT,
-  INTERACTION_PLANE_WIDTH,
-  INTERACTION_PLANE_Y,
-  INTERACTION_PLANE_Z,
-  MODEL_VISUAL_OFFSET,
   POINTER_EASE,
 } from "../constants";
 import { clamp, hashName, normalizeModel, smoothstep } from "../lib/fractureMath";
-import { applyGlassSettings, createGlassMaterial } from "../lib/glassMaterial";
 
 export default function FaceModel({ onReady, settings }) {
   const fractured = useGLTF(FACE_MODEL_URL, DRACO_PATH);
   const fracturedScene = useMemo(() => fractured.scene.clone(true), [fractured.scene]);
+  const hitScene = useMemo(() => fractured.scene.clone(true), [fractured.scene]);
   const camera = useThree((state) => state.camera);
   const gl = useThree((state) => state.gl);
   const invalidate = useThree((state) => state.invalidate);
@@ -48,15 +42,16 @@ export default function FaceModel({ onReady, settings }) {
   const onReadyRef = useRef(onReady);
   const material = useRef(null);
   const fragmentMaterials = useRef([]);
+  const hitTargets = useRef([]);
   const raycaster = useRef(new Raycaster());
   const pointerNdc = useRef(new Vector2());
-  const interactionPlane = useRef(
-    new Plane(new Vector3(0, 0, 1), -INTERACTION_PLANE_Z),
-  );
-  const interactionPoint = useRef(new Vector3());
 
   if (material.current === null) {
-    material.current = createGlassMaterial();
+    material.current = new MeshStandardMaterial({
+      color: "#ffffff",
+      metalness: 0,
+      roughness: 0.38,
+    });
   }
 
   useEffect(() => {
@@ -71,28 +66,18 @@ export default function FaceModel({ onReady, settings }) {
     pointerNdc.current.set(pointerX * 2 - 1, -(pointerY * 2 - 1));
     raycaster.current.setFromCamera(pointerNdc.current, camera);
 
-    const point = raycaster.current.ray.intersectPlane(
-      interactionPlane.current,
-      interactionPoint.current,
-    );
+    modelGroup.current?.updateMatrixWorld(true);
 
-    if (!point) {
-      hoverActive.current = false;
-      return false;
-    }
+    const hit = raycaster.current.intersectObjects(hitTargets.current, false)[0];
 
-    const isInside =
-      Math.abs(point.x) <= INTERACTION_PLANE_WIDTH / 2 &&
-      Math.abs(point.y - INTERACTION_PLANE_Y) <= INTERACTION_PLANE_HEIGHT / 2;
-
-    if (!isInside) {
+    if (!hit) {
       hoverActive.current = false;
       return false;
     }
 
     hoverActive.current = true;
-    localHoverPoint.current.copy(point);
-    modelGroup.current?.worldToLocal(localHoverPoint.current);
+    localHoverPoint.current.copy(hit.point);
+    modelGroup.current.worldToLocal(localHoverPoint.current);
     hoverTargetPoint.current.copy(localHoverPoint.current);
 
     return true;
@@ -118,6 +103,7 @@ export default function FaceModel({ onReady, settings }) {
     }
 
     normalizeModel(fracturedScene);
+    normalizeModel(hitScene);
 
     fracturedScene.updateMatrixWorld(true);
     const bounds = new Box3().setFromObject(fracturedScene);
@@ -129,7 +115,6 @@ export default function FaceModel({ onReady, settings }) {
       }
 
       const fragmentMaterial = material.current.clone();
-      applyGlassSettings(fragmentMaterial, DEFAULT_GLASS_SETTINGS);
       child.material = fragmentMaterial;
       child.castShadow = false;
       child.receiveShadow = false;
@@ -166,15 +151,30 @@ export default function FaceModel({ onReady, settings }) {
       );
     });
 
+    const raycastTargets = [];
+
+    hitScene.traverse((child) => {
+      if (!child.isMesh) {
+        return;
+      }
+
+      child.renderOrder = -1;
+      child.frustumCulled = false;
+      child.geometry.computeBoundingBox();
+      raycastTargets.push(child);
+    });
+
     fragmentMaterials.current = fractureMaterials;
+    hitTargets.current = raycastTargets;
     invalidate();
 
     return () => {
       fractureMaterials.forEach((fragmentMaterial) => fragmentMaterial.dispose());
       fractureMaterials.length = 0;
       fragmentMaterials.current = [];
+      hitTargets.current = [];
     };
-  }, [fracturedScene, invalidate]);
+  }, [fracturedScene, hitScene, invalidate]);
 
   useEffect(() => {
     const canvas = gl.domElement;
@@ -276,13 +276,6 @@ export default function FaceModel({ onReady, settings }) {
   }, [gl.domElement, updatePointerPoint]);
 
   useEffect(() => {
-    fragmentMaterials.current.forEach((fragmentMaterial) => {
-      applyGlassSettings(fragmentMaterial, settings);
-    });
-    invalidate();
-  }, [settings, invalidate]);
-
-  useEffect(() => {
     invalidate();
   }, [fracturedScene, invalidate]);
 
@@ -309,16 +302,17 @@ export default function FaceModel({ onReady, settings }) {
       Math.min(1, delta * POINTER_EASE),
     );
 
+    if (dragActive.current) {
+      return;
+    }
+
     fracturedScene.traverse((child) => {
       if (!child.isMesh || !child.userData.origin) {
         return;
       }
 
       const distance = hoverActive.current
-        ? Math.hypot(
-            child.userData.center.x - hoverPoint.current.x,
-            child.userData.center.y - hoverPoint.current.y,
-          )
+        ? child.userData.center.distanceTo(hoverPoint.current)
         : Number.POSITIVE_INFINITY;
       const targetInfluence = smoothstep(HOVER_RADIUS, HOVER_CORE, distance);
       const easeSpeed = targetInfluence > child.userData.influence ? FRAGMENT_EASE_IN : FRAGMENT_EASE_OUT;
@@ -338,9 +332,22 @@ export default function FaceModel({ onReady, settings }) {
   });
 
   return (
-    <group ref={stage} position={MODEL_VISUAL_OFFSET}>
+    <group
+      ref={stage}
+      position={[
+        settings.modelPositionX,
+        settings.modelPositionY,
+        settings.modelPositionZ,
+      ]}
+      rotation={[
+        MathUtils.degToRad(settings.modelRotationX),
+        MathUtils.degToRad(settings.modelRotationY),
+        MathUtils.degToRad(settings.modelRotationZ),
+      ]}
+    >
       <group ref={modelGroup}>
         <primitive object={fracturedScene} />
+        <primitive object={hitScene} visible={false} />
       </group>
     </group>
   );

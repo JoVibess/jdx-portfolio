@@ -1,146 +1,87 @@
 .about-section {
   position: relative;
-  display: grid;
-  place-items: center;
-  min-height: 100vh;
-  padding: 7.5rem 1.5rem;
-  overflow: hidden;
+  z-index: 20;
+  min-height: 32rem;
+  padding: 15.5rem clamp(1.5rem, 5.4vw, 5.5rem) 4.7rem;
   background: var(--background);
-
-  & .about-section__inner {
-    position: relative;
-    display: grid;
-    align-items: center;
-    width: min(100%, 1040px);
-    min-height: 36.5rem;
-  }
-
-  & .about-section__map {
-    --about-map-x: 0px;
-    --about-map-y: 0px;
-    position: absolute;
-    left: 8.5rem;
-    top: 50%;
-    z-index: 0;
-    width: 31rem;
-    max-width: 60%;
-    height: auto;
-    transform: translate(var(--about-map-x), calc(-50% + var(--about-map-y)));
-    transition: transform 0.18s ease-out;
-    will-change: transform;
-  }
-
-  & .about-section__map-image {
-    display: block;
-    width: 100%;
-    height: auto;
-  }
-
-  & .about-section__content {
-    position: relative;
-    z-index: 1;
-    width: min(100%, 54rem);
-    margin-inline: auto;
-    padding-top: 0.25rem;
-  }
-
-  & .about-section__title {
-    display: grid;
-    gap: 0.2rem;
-    margin: 0;
-    color: var(--color-black);
-    font-family: var(--font-financier-display);
-    font-size: 5.25rem;
-    font-weight: 300;
-    line-height: 0.88;
-    letter-spacing: 0;
-  }
-
-  & .about-section__title em {
-    justify-self: end;
-    padding-right: 4.25rem;
-    color: var(--color-red);
-    font-style: italic;
-  }
-
-  & .about-section__body {
-    width: min(100%, 40rem);
-    margin: 3.1rem 0 0 auto;
-    color: var(--color-black);
-    font-family: var(--font-hellix);
-    font-size: 1.35rem;
-    font-weight: 300;
-    line-height: 1.5;
-    letter-spacing: 0;
-    text-align: justify;
-    text-align-last: left;
-  }
 }
 
-@media (max-width: 980px) {
-  .about-section {
-    padding-block: 6rem;
-
-    & .about-section__inner {
-      min-height: 34rem;
-    }
-
-    & .about-section__map {
-      left: 50%;
-      width: 28rem;
-      max-width: 82%;
-      transform: translate(
-        calc(-50% + var(--about-map-x)),
-        calc(-50% + var(--about-map-y))
-      );
-    }
-
-    & .about-section__content {
-      width: min(100%, 42rem);
-    }
-
-    & .about-section__title {
-      font-size: 4.25rem;
-    }
-
-    & .about-section__title em {
-      padding-right: 0;
-    }
-
-    & .about-section__body {
-      margin-top: 2.5rem;
-      font-size: 1.18rem;
-    }
-  }
+.about-section__inner {
+  display: grid;
+  grid-template-columns: minmax(17rem, 0.9fr) minmax(18rem, 1fr);
+  gap: clamp(3rem, 10vw, 10rem);
+  align-items: start;
+  max-width: 91rem;
+  margin: 0 auto;
 }
 
-@media (max-width: 640px) {
+.about-section__headline {
+  position: relative;
+  z-index: 2;
+}
+
+.about-section__label {
+  margin: 0 0 0.45rem;
+  color: var(--color-black);
+  font-family: var(--font-roc-grotesk);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.about-section__title {
+  display: grid;
+  gap: 0.08em;
+  margin: 0;
+  color: var(--color-black);
+  font-family: var(--font-roc-grotesk);
+  font-size: clamp(2.8rem, 4vw, 4.15rem);
+  font-weight: 400;
+  line-height: 0.9;
+  letter-spacing: -0.065em;
+  text-transform: uppercase;
+}
+
+.about-section__title em {
+  color: #ffffff;
+  font-family: var(--font-financier-display);
+  font-size: 1.05em;
+  font-style: italic;
+  font-weight: 300;
+  letter-spacing: -0.03em;
+  text-transform: lowercase;
+}
+
+.about-section__copy {
+  position: relative;
+  z-index: 2;
+  padding-top: 2.4rem;
+  border-top: 1px solid var(--color-black);
+}
+
+.about-section__copy p {
+  max-width: 44rem;
+  margin: 0;
+  color: var(--color-black);
+  font-family: var(--font-roc-grotesk);
+  font-size: clamp(1rem, 1.3vw, 1.28rem);
+  font-weight: 400;
+  line-height: 1.5;
+  letter-spacing: 0.01em;
+}
+
+@media (max-width: 860px) {
   .about-section {
-    padding: 5rem 1rem;
+    padding: 11rem 1.25rem 4rem;
+  }
 
-    & .about-section__inner {
-      min-height: 37rem;
-    }
+  .about-section__inner {
+    grid-template-columns: 1fr;
+    gap: 2.5rem;
+  }
 
-    & .about-section__map {
-      top: 46%;
-      width: 23rem;
-      max-width: 96%;
-    }
-
-    & .about-section__title {
-      font-size: 3.25rem;
-    }
-
-    & .about-section__title em {
-      justify-self: start;
-    }
-
-    & .about-section__body {
-      width: 100%;
-      margin-top: 2.1rem;
-      font-size: 1rem;
-      line-height: 1.4;
-    }
+  .about-section__copy {
+    padding-top: 1.5rem;
   }
 }

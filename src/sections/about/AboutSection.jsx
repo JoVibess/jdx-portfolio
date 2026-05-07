@@ -1,19 +1,20 @@
 import { site } from "@/data/site";
-import MauritiusMap from "@/features/about/MauritiusMap";
 
 export default function AboutSection() {
-  const { sectionLabel, title, accent, body } = site.sections.about;
+  const { accent, body, sectionLabel, title } = site.sections.about;
 
   return (
     <section aria-label={sectionLabel} className="about-section">
       <div className="about-section__inner">
-        <MauritiusMap />
-        <div className="about-section__content">
+        <div className="about-section__headline">
+          <p className="about-section__label">{sectionLabel}</p>
           <h2 className="about-section__title">
             <span>{title}</span>
             <em>{accent}</em>
           </h2>
-          <p className="about-section__body">{body}</p>
+        </div>
+        <div className="about-section__copy">
+          <p>{body}</p>
         </div>
       </div>
     </section>
