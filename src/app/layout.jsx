@@ -1,4 +1,5 @@
 import "./globals.css";
+import CustomCursor from "@/features/cursor/CustomCursor";
 import { site } from "@/data/site";
 
 export const metadata = {
@@ -11,6 +12,7 @@ export default function RootLayout({ children }) {
     <html lang="fr" className="h-full antialiased">
       <body className="min-h-full flex flex-col" suppressHydrationWarning>
         {children}
+        <CustomCursor />
       </body>
     </html>
   );

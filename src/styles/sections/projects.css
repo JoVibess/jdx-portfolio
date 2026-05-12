@@ -1,0 +1,118 @@
+.projects-section {
+  position: relative;
+  min-height: 100vh;
+  overflow: hidden;
+  padding: clamp(5rem, 8vw, 8rem) clamp(1.25rem, 4vw, 4rem);
+  background: var(--color-black);
+  color: #ffffff;
+
+  & .projects-section__inner {
+    position: relative;
+    z-index: 2;
+    width: min(100%, 88rem);
+    margin: 0 auto;
+    mix-blend-mode: difference;
+  }
+
+  & .projects-section__kicker {
+    margin: 0 0 clamp(3rem, 6vw, 6rem);
+    font-family: var(--font-roc-grotesk);
+    font-size: clamp(0.86rem, 1vw, 1rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.08em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  & .projects-section__list {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    margin: 0;
+    padding: 0;
+    border-bottom: 1px solid currentColor;
+    list-style: none;
+  }
+
+  & .projects-section__item {
+    border-top: 1px solid currentColor;
+  }
+
+  & .projects-section__link {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 1.5rem;
+    align-items: center;
+    min-height: clamp(4.6rem, 7vw, 7.5rem);
+    color: currentColor;
+  }
+
+  & .projects-section__title {
+    display: block;
+    overflow: hidden;
+    font-family: var(--font-roc-grotesk-wide);
+    font-size: clamp(2.65rem, 6.15vw, 7.75rem);
+    font-weight: 500;
+    line-height: 0.82;
+    letter-spacing: -0.075em;
+    text-transform: uppercase;
+  }
+
+  & .projects-section__title-line {
+    display: block;
+    opacity: 0;
+    transform: translate3d(0, 112%, 0);
+    transition:
+      opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+      transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+  }
+
+  & .projects-section__title.is-visible .projects-section__title-line {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+
+  & .projects-section__meta {
+    font-family: var(--font-roc-grotesk);
+    font-size: clamp(0.78rem, 1vw, 0.95rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.06em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .projects-section {
+    & .projects-section__title-line {
+      opacity: 1;
+      transform: none;
+      transition: none;
+    }
+  }
+}
+
+.project-distortion-scene {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+}
+
+@media (max-width: 860px) {
+  .projects-section {
+    padding-inline: 1.25rem;
+
+    & .projects-section__link {
+      grid-template-columns: 1fr;
+      gap: 0.75rem;
+      padding: 1.25rem 0;
+    }
+
+    & .projects-section__meta {
+      justify-self: start;
+    }
+
+  }
+}

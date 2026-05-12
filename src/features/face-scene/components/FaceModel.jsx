@@ -16,17 +16,28 @@ import {
   FRAGMENT_EASE_OUT,
   HOVER_CORE,
   HOVER_RADIUS,
+  MODEL_RESPONSIVE_SCALE,
+  MODEL_RESPONSIVE_SCALE_BREAKPOINT,
   POINTER_EASE,
 } from "../constants";
 import { clamp, hashName, normalizeModel, smoothstep } from "../lib/fractureMath";
 
-export default function FaceModel({ onReady, settings }) {
+export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
   const fractured = useGLTF(FACE_MODEL_URL, DRACO_PATH);
   const fracturedScene = useMemo(() => fractured.scene.clone(true), [fractured.scene]);
   const hitScene = useMemo(() => fractured.scene.clone(true), [fractured.scene]);
   const camera = useThree((state) => state.camera);
   const gl = useThree((state) => state.gl);
   const invalidate = useThree((state) => state.invalidate);
+  const viewportHeight = useThree((state) => state.viewport.height);
+  const viewportPixelHeight = useThree((state) => state.size.height);
+  const viewportWidth = useThree((state) => state.size.width);
+  const modelScale =
+    viewportWidth <= MODEL_RESPONSIVE_SCALE_BREAKPOINT
+      ? MODEL_RESPONSIVE_SCALE
+      : 1;
+  const headerWorldOffset =
+    viewportPixelHeight > 0 ? (headerOffsetPx / viewportPixelHeight) * viewportHeight : 0;
   const stage = useRef(null);
   const modelGroup = useRef(null);
   const hoverActive = useRef(false);
@@ -37,6 +48,7 @@ export default function FaceModel({ onReady, settings }) {
   const dragStartPointer = useRef({ x: 0, y: 0 });
   const dragStartRotation = useRef({ x: 0, y: 0 });
   const dragTargetRotation = useRef({ x: 0, y: 0 });
+  const cursorDragMode = useRef(false);
   const hasNotifiedReady = useRef(false);
   const readyElapsed = useRef(0);
   const onReadyRef = useRef(onReady);
@@ -58,6 +70,20 @@ export default function FaceModel({ onReady, settings }) {
     onReadyRef.current = onReady;
   }, [onReady]);
 
+  const setCursorDragMode = useCallback((isActive) => {
+    if (cursorDragMode.current === isActive) {
+      return;
+    }
+
+    cursorDragMode.current = isActive;
+    gl.domElement.classList.toggle("cursor-over", isActive);
+    window.dispatchEvent(
+      new CustomEvent("jdx:cursor-mode", {
+        detail: { mode: isActive ? "drag" : "" },
+      }),
+    );
+  }, [gl.domElement]);
+
   const updatePointerPoint = useCallback((event) => {
     const rect = gl.domElement.getBoundingClientRect();
     const pointerX = (event.clientX - rect.left) / rect.width;
@@ -72,16 +98,18 @@ export default function FaceModel({ onReady, settings }) {
 
     if (!hit) {
       hoverActive.current = false;
+      setCursorDragMode(false);
       return false;
     }
 
     hoverActive.current = true;
+    setCursorDragMode(true);
     localHoverPoint.current.copy(hit.point);
     modelGroup.current.worldToLocal(localHoverPoint.current);
     hoverTargetPoint.current.copy(localHoverPoint.current);
 
     return true;
-  }, [camera, gl.domElement]);
+  }, [camera, gl.domElement, setCursorDragMode]);
 
   useLayoutEffect(() => {
     const fractureMaterials = [];
@@ -189,6 +217,7 @@ export default function FaceModel({ onReady, settings }) {
         const deltaY = event.clientY - dragStartPointer.current.y;
 
         hoverActive.current = false;
+        setCursorDragMode(true);
         dragTargetRotation.current = {
           x: clamp(
             dragStartRotation.current.x + deltaY * DRAG_TILT_SPEED,
@@ -203,6 +232,7 @@ export default function FaceModel({ onReady, settings }) {
 
       if (event.buttons !== 0) {
         hoverActive.current = false;
+        setCursorDragMode(false);
         return;
       }
 
@@ -211,6 +241,7 @@ export default function FaceModel({ onReady, settings }) {
 
     const handlePointerLeave = () => {
       hoverActive.current = false;
+      setCursorDragMode(false);
     };
 
     const stopDrag = (event) => {
@@ -220,6 +251,7 @@ export default function FaceModel({ onReady, settings }) {
 
       dragActive.current = false;
       hoverActive.current = false;
+      setCursorDragMode(false);
 
       if (modelGroup.current) {
         dragTargetRotation.current = {
@@ -239,10 +271,12 @@ export default function FaceModel({ onReady, settings }) {
     const handlePointerDown = (event) => {
       if (!modelGroup.current || !updatePointerPoint(event)) {
         hoverActive.current = false;
+        setCursorDragMode(false);
         return;
       }
 
       hoverActive.current = false;
+      setCursorDragMode(true);
       dragActive.current = true;
       dragStartPointer.current = { x: event.clientX, y: event.clientY };
       dragStartRotation.current = {
@@ -272,8 +306,9 @@ export default function FaceModel({ onReady, settings }) {
       canvas.removeEventListener("pointerleave", handlePointerLeave);
       window.removeEventListener("pointerup", stopDrag);
       window.removeEventListener("pointercancel", stopDrag);
+      setCursorDragMode(false);
     };
-  }, [gl.domElement, updatePointerPoint]);
+  }, [gl.domElement, setCursorDragMode, updatePointerPoint]);
 
   useEffect(() => {
     invalidate();
@@ -336,7 +371,7 @@ export default function FaceModel({ onReady, settings }) {
       ref={stage}
       position={[
         settings.modelPositionX,
-        settings.modelPositionY,
+        settings.modelPositionY - headerWorldOffset,
         settings.modelPositionZ,
       ]}
       rotation={[
@@ -344,6 +379,7 @@ export default function FaceModel({ onReady, settings }) {
         MathUtils.degToRad(settings.modelRotationY),
         MathUtils.degToRad(settings.modelRotationZ),
       ]}
+      scale={modelScale}
     >
       <group ref={modelGroup}>
         <primitive object={fracturedScene} />

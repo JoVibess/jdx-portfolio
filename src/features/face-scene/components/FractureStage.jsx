@@ -2,7 +2,7 @@
 
 import { Canvas } from "@react-three/fiber";
 import { Preload, Stats } from "@react-three/drei";
-import { Suspense, useCallback } from "react";
+import { Suspense, useCallback, useLayoutEffect, useRef, useState } from "react";
 
 import FaceModel from "./FaceModel";
 
@@ -11,12 +11,40 @@ export default function FractureStage({
   onModelReady,
   settings,
 }) {
+  const stageRef = useRef(null);
+  const [headerOffsetPx, setHeaderOffsetPx] = useState(0);
+
   const handleModelReady = useCallback(() => {
     onModelReady?.();
   }, [onModelReady]);
 
+  useLayoutEffect(() => {
+    const stageElement = stageRef.current;
+    const headerElement = stageElement
+      ?.closest(".hero-section")
+      ?.querySelector(".hero-section__header");
+
+    if (!headerElement) return undefined;
+
+    const updateHeaderOffset = () => {
+      setHeaderOffsetPx(headerElement.getBoundingClientRect().height / 2);
+    };
+
+    updateHeaderOffset();
+
+    const resizeObserver = new ResizeObserver(updateHeaderOffset);
+    resizeObserver.observe(headerElement);
+    window.addEventListener("resize", updateHeaderOffset);
+
+    return () => {
+      resizeObserver.disconnect();
+      window.removeEventListener("resize", updateHeaderOffset);
+    };
+  }, []);
+
   return (
     <div
+      ref={stageRef}
       className="face-scene-stage"
       style={{
         cursor: "crosshair",
@@ -84,7 +112,11 @@ export default function FractureStage({
         {settings.showFps ? <Stats /> : null}
         {settings.showModel ? (
           <Suspense fallback={null}>
-            <FaceModel onReady={handleModelReady} settings={settings} />
+            <FaceModel
+              headerOffsetPx={headerOffsetPx}
+              onReady={handleModelReady}
+              settings={settings}
+            />
             <Preload all />
           </Suspense>
         ) : null}
