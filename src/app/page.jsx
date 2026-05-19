@@ -1,7 +1,8 @@
-import ProjectsCarouselSection from "@/sections/carousel/ProjectsCarouselSection";
 import FaceScenePreload from "@/features/face-scene/components/FaceScenePreload";
 import AboutSection from "@/sections/about/AboutSection";
 import HeroSection from "@/sections/hero/HeroSection";
+import ProjectsSection from "@/sections/projects/ProjectsSection";
+import SkillsCarouselSection from "@/sections/skills/SkillsCarouselSection";
 
 export default function Home() {
   return (
@@ -9,7 +10,8 @@ export default function Home() {
       <FaceScenePreload />
       <HeroSection />
       <AboutSection />
-      <ProjectsCarouselSection />
+      <SkillsCarouselSection />
+      <ProjectsSection />
     </main>
   );
 }

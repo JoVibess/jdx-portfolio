@@ -1,0 +1,222 @@
+.skills-carousel {
+  --skill-card-width: clamp(17rem, 25vw, 27rem);
+  --skill-card-height: clamp(24rem, 37vw, 35.5rem);
+  --skill-card-gap: clamp(2.25rem, 8vw, 10rem);
+  --skill-hover-duration: 220ms;
+  --skill-hover-ease: ease;
+  position: relative;
+  width: 100%;
+
+  & .skills-carousel__viewport {
+    width: 100%;
+    overflow: hidden;
+    touch-action: pan-y;
+    cursor: grab;
+    user-select: none;
+  }
+
+  & .skills-carousel__viewport:active {
+    cursor: grabbing;
+  }
+
+  & .skills-carousel__track {
+    display: flex;
+    gap: var(--skill-card-gap);
+    align-items: center;
+    width: max-content;
+    will-change: transform;
+    transition: transform 520ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  & .skills-carousel__track[data-dragging="true"] {
+    transition: none;
+  }
+
+  & .skills-carousel__card {
+    position: relative;
+    display: grid;
+    place-items: center;
+    flex: 0 0 var(--skill-card-width);
+    width: var(--skill-card-width);
+    height: var(--skill-card-height);
+    padding: clamp(1.25rem, 2.6vw, 2rem);
+    overflow: hidden;
+    border: 0;
+    border-radius: 8px;
+    color: var(--color-black);
+    background: #ffffff;
+    box-shadow: none;
+    appearance: none;
+    cursor: inherit;
+    transition:
+      color var(--skill-hover-duration) var(--skill-hover-ease),
+      background-color var(--skill-hover-duration) var(--skill-hover-ease),
+      opacity var(--skill-hover-duration) var(--skill-hover-ease);
+  }
+
+  & .skills-carousel__card:not([aria-current="true"]) {
+    opacity: 0.45;
+  }
+
+  & .skills-carousel__card:hover,
+  & .skills-carousel__card:focus-visible {
+    color: #ffffff;
+    background: var(--skill-card-color);
+    opacity: 1;
+    outline: none;
+  }
+
+  & .skills-carousel__card[aria-current="true"] {
+    opacity: 1;
+  }
+
+  & .skills-carousel__content {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    display: grid;
+    justify-items: center;
+    gap: clamp(1rem, 1.8vw, 1.7rem);
+    width: min(82%, 18rem);
+    transform: translate(-50%, -50%);
+  }
+
+  & .skills-carousel__title {
+    max-width: 100%;
+    color: currentColor;
+    font-family: var(--font-roc-grotesk);
+    font-size: clamp(2rem, 3.2vw, 4.1rem);
+    font-weight: 700;
+    line-height: 0.95;
+    letter-spacing: -0.06em;
+    text-align: center;
+    text-transform: uppercase;
+  }
+
+  & .skills-carousel__progress {
+    position: relative;
+    display: block;
+    width: min(100%, 10rem);
+    height: 4px;
+    overflow: hidden;
+    background: rgba(0, 0, 0, 0.12);
+    transition: background-color var(--skill-hover-duration) var(--skill-hover-ease);
+  }
+
+  & .skills-carousel__card:hover .skills-carousel__progress,
+  & .skills-carousel__card:focus-visible .skills-carousel__progress {
+    background: rgba(255, 255, 255, 0.3);
+  }
+
+  & .skills-carousel__progress-fill {
+    position: absolute;
+    left: 0;
+    top: 0;
+    display: block;
+    width: var(--skill-level);
+    height: 100%;
+    background: var(--skill-card-color);
+    transition:
+      width 220ms ease,
+      background-color var(--skill-hover-duration) var(--skill-hover-ease);
+  }
+
+  & .skills-carousel__card:hover .skills-carousel__progress-fill,
+  & .skills-carousel__card:focus-visible .skills-carousel__progress-fill {
+    background: currentColor;
+  }
+
+  & .skills-carousel__type {
+    position: absolute;
+    left: 50%;
+    bottom: clamp(3.5rem, 5vw, 5.25rem);
+    width: 12rem;
+    color: currentColor;
+    font-family: var(--font-roc-grotesk);
+    font-size: 0.78rem;
+    font-weight: 500;
+    line-height: 1.15;
+    letter-spacing: 0.06em;
+    text-align: center;
+    text-transform: uppercase;
+    transform: translateX(-50%);
+    opacity: 0.62;
+  }
+
+  & .skills-carousel__corner {
+    position: absolute;
+    width: 0.6rem;
+    height: 0.6rem;
+    opacity: 0.62;
+    pointer-events: none;
+  }
+
+  & .skills-carousel__corner--top-left {
+    left: 1.35rem;
+    top: 1.35rem;
+    border-top: 1px solid currentColor;
+    border-left: 1px solid currentColor;
+  }
+
+  & .skills-carousel__corner--top-right {
+    right: 1.35rem;
+    top: 1.35rem;
+    border-top: 1px solid currentColor;
+    border-right: 1px solid currentColor;
+  }
+
+  & .skills-carousel__corner--bottom-left {
+    left: 1.35rem;
+    bottom: 1.35rem;
+    border-bottom: 1px solid currentColor;
+    border-left: 1px solid currentColor;
+  }
+
+  & .skills-carousel__corner--bottom-right {
+    right: 1.35rem;
+    bottom: 1.35rem;
+    border-right: 1px solid currentColor;
+    border-bottom: 1px solid currentColor;
+  }
+
+  & .skills-carousel__controls {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: clamp(3.25rem, 5vw, 5rem);
+  }
+
+  & .skills-carousel__control {
+    display: inline-grid;
+    place-items: center;
+    width: 2.1rem;
+    height: 2.1rem;
+    border: 0;
+    border-radius: 4px;
+    color: var(--color-black);
+    background: rgba(255, 255, 255, 0.7);
+    font-family: var(--font-roc-grotesk);
+    font-size: 1.1rem;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+      color 180ms ease,
+      background-color 180ms ease;
+  }
+
+  & .skills-carousel__control:hover,
+  & .skills-carousel__control:focus-visible {
+    color: #ffffff;
+    background: var(--color-black);
+    outline: none;
+  }
+}
+
+@media (max-width: 860px) {
+  .skills-carousel {
+    --skill-card-width: min(76vw, 22rem);
+    --skill-card-height: 26rem;
+    --skill-card-gap: 2rem;
+
+  }
+}

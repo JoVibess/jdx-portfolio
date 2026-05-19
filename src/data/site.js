@@ -14,9 +14,10 @@ export const site = {
       accent: "creativity",
       body: "Curious and motivated, I'm working toward becoming a full-stack developer. Growing up in Mauritius shaped my eye for design, while my background in marine biology brings logic, reasoning, and organization to my work.",
     },
-    carousel: {
-      sectionLabel: "Projects",
-      title: "Projects",
+    skills: {
+      sectionLabel: "Skills",
+      kicker: "Technical skills",
+      title: "Frameworks and libraries I regularly work with",
     },
   },
 };

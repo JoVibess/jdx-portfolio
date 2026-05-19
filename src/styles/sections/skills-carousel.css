@@ -1,0 +1,50 @@
+.skills-carousel-section {
+  position: relative;
+  z-index: 10;
+  min-height: 100vh;
+  padding: clamp(5rem, 8vw, 8rem) 0 clamp(2.5rem, 4vw, 4rem);
+  overflow: hidden;
+  background: var(--background);
+
+  & .skills-carousel-section__header {
+    display: grid;
+    justify-items: center;
+    width: min(100% - 3rem, 52rem);
+    margin: 0 auto clamp(4.5rem, 8vw, 8rem);
+    text-align: center;
+  }
+
+  & .skills-carousel-section__kicker {
+    margin: 0 0 0.9rem;
+    color: var(--color-black);
+    font-family: var(--font-roc-grotesk);
+    font-size: clamp(0.78rem, 0.9vw, 0.95rem);
+    font-weight: 500;
+    line-height: 1;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  & .skills-carousel-section__title {
+    max-width: 42rem;
+    margin: 0;
+    color: var(--color-black);
+    font-family: var(--font-roc-grotesk);
+    font-size: 38px;
+    font-weight: 500;
+    line-height: 0.98;
+    letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+}
+
+@media (max-width: 860px) {
+  .skills-carousel-section {
+    min-height: 48rem;
+    padding-top: 4.5rem;
+
+    & .skills-carousel-section__header {
+      margin-bottom: 3.5rem;
+    }
+  }
+}

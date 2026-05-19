@@ -1,0 +1,31 @@
+.scroll-reveal {
+  opacity: 1;
+}
+
+.scroll-reveal__word {
+  display: inline-block;
+  opacity: 0;
+  filter: blur(2px);
+  transform: translate3d(0, 0.45em, 0);
+  transition:
+    opacity 0.75s cubic-bezier(0.39, 0.575, 0.565, 1),
+    filter 0.75s cubic-bezier(0.39, 0.575, 0.565, 1),
+    transform 0.75s cubic-bezier(0.39, 0.575, 0.565, 1);
+  transition-delay: calc(var(--word-index) * 40ms);
+  will-change: opacity, filter, transform;
+}
+
+.scroll-reveal.is-visible .scroll-reveal__word {
+  opacity: 1;
+  filter: blur(0);
+  transform: translate3d(0, 0, 0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .scroll-reveal__word {
+    opacity: 1;
+    filter: none;
+    transform: none;
+    transition: none;
+  }
+}

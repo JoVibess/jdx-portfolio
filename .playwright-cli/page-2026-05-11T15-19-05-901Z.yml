@@ -1,0 +1,103 @@
+- generic [active] [ref=e1]:
+  - main [ref=e2]:
+    - region "Joey Decroix" [ref=e3]:
+      - generic "Primary" [ref=e4]:
+        - link "JDX" [ref=e5]:
+          - /url: /
+          - img [ref=e6]
+      - heading "Hi, I'm Joey Decroix" [level=1] [ref=e8]:
+        - generic [ref=e9]: Hi, I'm
+        - generic [ref=e10]: Joey
+        - generic [ref=e11]: Decroix
+      - status [ref=e12]:
+        - generic [ref=e13]:
+          - generic [ref=e14]: Chargement
+          - generic [ref=e15]: 0%
+    - region "Profil" [ref=e16]:
+      - img
+      - generic [ref=e17]:
+        - generic [ref=e18]:
+          - paragraph [ref=e19]: Profil
+          - heading "Where logic meets creativity" [level=2] [ref=e20]:
+            - generic [ref=e21]: Where logic meets
+            - emphasis [ref=e22]: creativity
+        - paragraph [ref=e25]: Curious and motivated, I'm working toward becoming a full-stack developer. Growing up in Mauritius shaped my eye for design, while my background in marine biology brings logic, reasoning, and organization to my work.
+    - region "Skills" [ref=e26]:
+      - generic [ref=e27]:
+        - paragraph [ref=e28]: Technical skills
+        - heading "Frameworks and libraries I regularly work with" [level=2] [ref=e29]
+      - generic [ref=e30]:
+        - generic [ref=e32]:
+          - button "Next.js React-based framework" [ref=e33]:
+            - generic [ref=e35]: Next.js
+            - generic [ref=e38]: React-based framework
+          - button "React JavaScript library" [ref=e39]:
+            - generic [ref=e41]: React
+            - generic [ref=e44]: JavaScript library
+          - button "Symfony Backend framework" [ref=e45]:
+            - generic [ref=e47]: Symfony
+            - generic [ref=e50]: Backend framework
+          - button "Express.js Node API layer" [ref=e51]:
+            - generic [ref=e53]: Express.js
+            - generic [ref=e56]: Node API layer
+          - button "wordpress CMS" [ref=e57]:
+            - generic [ref=e59]: wordpress
+            - generic [ref=e62]: CMS
+          - button "Three.js WebGL scenes" [ref=e63]:
+            - generic [ref=e65]: Three.js
+            - generic [ref=e68]: WebGL scenes
+          - button "Gsap JavaScript animation library" [ref=e69]:
+            - generic [ref=e71]: Gsap
+            - generic [ref=e74]: JavaScript animation library
+          - button "bootsrap CSS library" [ref=e75]:
+            - generic [ref=e77]: bootsrap
+            - generic [ref=e80]: CSS library
+          - button "tailwind CSS library" [ref=e81]:
+            - generic [ref=e83]: tailwind
+            - generic [ref=e86]: CSS library
+        - generic "Skill carousel controls" [ref=e87]:
+          - button "Previous skill" [ref=e88]: ←
+          - button "Next skill" [ref=e89]: →
+    - region "Projects" [ref=e90]:
+      - generic [ref=e94]:
+        - paragraph [ref=e95]: Projects
+        - list [ref=e96]:
+          - listitem [ref=e97]:
+            - link "Corrèze 2026" [ref=e98]:
+              - /url: /projet/correze
+              - generic [ref=e99]: Corrèze
+              - generic [ref=e100]: "2026"
+          - listitem [ref=e101]:
+            - link "JDX Portfolio 2026" [ref=e102]:
+              - /url: /projet/jdx-portfolio
+              - generic [ref=e103]: JDX Portfolio
+              - generic [ref=e104]: "2026"
+          - listitem [ref=e105]:
+            - link "Mauritius Atlas 2025" [ref=e106]:
+              - /url: /projet/mauritius-atlas
+              - generic [ref=e107]: Mauritius Atlas
+              - generic [ref=e108]: "2025"
+          - listitem [ref=e109]:
+            - link "Marine Notes 2025" [ref=e110]:
+              - /url: /projet/marine-notes
+              - generic [ref=e111]: Marine Notes
+              - generic [ref=e112]: "2025"
+          - listitem [ref=e113]:
+            - link "Studio Grid 2024" [ref=e114]:
+              - /url: /projet/studio-grid
+              - generic [ref=e115]: Studio Grid
+              - generic [ref=e116]: "2024"
+          - listitem [ref=e117]:
+            - link "Motion Lab 2024" [ref=e118]:
+              - /url: /projet/motion-lab
+              - generic [ref=e119]: Motion Lab
+              - generic [ref=e120]: "2024"
+          - listitem [ref=e121]:
+            - link "Backend Foundry 2024" [ref=e122]:
+              - /url: /projet/backend-foundry
+              - generic [ref=e123]: Backend Foundry
+              - generic [ref=e124]: "2024"
+  - generic:
+    - generic: Drag
+  - button "Open Next.js Dev Tools" [ref=e130] [cursor=pointer]:
+    - img [ref=e131]

@@ -2,8 +2,10 @@ export const DRACO_PATH = "/draco/";
 export const FACE_MODEL_URL = "/models/face/fractured-face.glb";
 export const PAGE_BACKGROUND = "#f2f2f2";
 
-export const MODEL_HEIGHT = 1.85;
+export const MODEL_HEIGHT = 1.7;
 export const MODEL_VISUAL_OFFSET = [0, 0, 0];
+export const MODEL_RESPONSIVE_SCALE_BREAKPOINT = 800;
+export const MODEL_RESPONSIVE_SCALE = 0.88;
 export const HOVER_RADIUS = 0.8;
 export const HOVER_CORE = 0.4;
 export const POINTER_EASE = 5;
