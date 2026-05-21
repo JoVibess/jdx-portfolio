@@ -6,6 +6,9 @@
 @import "../styles/sections/skills-carousel.css";
 @import "../styles/sections/projects.css";
 @import "../styles/features/loader.css";
+@import "../styles/features/svg-curve-transition.css";
 @import "../styles/features/skills.css";
 @import "../styles/features/cursor.css";
 @import "../styles/features/scroll-reveal.css";
+@import "../styles/features/footer.css";
+@import "../styles/features/project-detail.css";

@@ -1,10 +1,11 @@
 import Image from "next/image";
 
 import HeroScene from "@/features/hero/components/HeroScene";
-import { site } from "@/data/site";
+import LanguageSwitch from "@/features/language/LanguageSwitch";
+import { getDictionary } from "@/lib/i18n";
 
-export default function HeroSection() {
-  const { sectionLabel, eyebrow, title } = site.sections.hero;
+export default function HeroSection({ site = getDictionary("en").site }) {
+  const { intro, sectionLabel, eyebrow, title } = site.sections.hero;
 
   return (
     <section aria-label={sectionLabel} className="hero-section">
@@ -20,10 +21,11 @@ export default function HeroSection() {
             priority
           />
         </a>
+        <LanguageSwitch />
       </header>
       <div className="hero-section__panel">
         <h1 className="hero-section__title">
-          <span className="hero-section__intro">Hi, I&apos;m</span>
+          <span className="hero-section__intro">{intro}</span>
           <span>{eyebrow}</span>
           <span>{title}</span>
         </h1>

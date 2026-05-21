@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef } from "react";
 
-const MAP_PARALLAX_MAX_OFFSET = 10;
+const MAP_PARALLAX_MAX_OFFSET = 16;
 
 export default function MauritiusMap() {
   const mapRef = useRef(null);

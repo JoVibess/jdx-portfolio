@@ -1,17 +1,12 @@
-import FaceScenePreload from "@/features/face-scene/components/FaceScenePreload";
-import AboutSection from "@/sections/about/AboutSection";
-import HeroSection from "@/sections/hero/HeroSection";
-import ProjectsSection from "@/sections/projects/ProjectsSection";
-import SkillsCarouselSection from "@/sections/skills/SkillsCarouselSection";
+import { getDictionary } from "@/lib/i18n";
+import HomeExperience from "@/features/home/HomeExperience";
 
 export default function Home() {
+  const dictionary = getDictionary("en");
+
   return (
-    <main className="relative min-h-screen overflow-hidden bg-background">
-      <FaceScenePreload />
-      <HeroSection />
-      <AboutSection />
-      <SkillsCarouselSection />
-      <ProjectsSection />
+    <main className="relative min-h-screen bg-background">
+      <HomeExperience dictionary={dictionary} locale="en" />
     </main>
   );
 }

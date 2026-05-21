@@ -1,12 +1,15 @@
 "use client";
 
-import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
 
-import { projects } from "@/data/projects";
 import ProjectDistortionScene from "@/features/project-distortion/ProjectDistortionScene";
+import { getDictionary } from "@/lib/i18n";
 
-export default function ProjectsSection() {
+export default function ProjectsSection({
+  labels = getDictionary("en").site.sections.projects,
+  projects = getDictionary("en").projects,
+  onProjectSelect,
+}) {
   const sectionRef = useRef(null);
   const [activeIndex, setActiveIndex] = useState(null);
   const [previewPosition, setPreviewPosition] = useState({ x: 0, y: 0 });
@@ -64,20 +67,21 @@ export default function ProjectsSection() {
   }, []);
 
   return (
-    <section ref={sectionRef} className="projects-section" aria-label="Projects">
+    <section ref={sectionRef} className="projects-section" aria-label={labels.sectionLabel}>
       <ProjectDistortionScene
         activeIndex={activeIndex}
         pointer={previewPosition}
         projects={projects}
       />
       <div className="projects-section__inner">
-        <p className="projects-section__kicker">Projects</p>
+        <p className="projects-section__kicker">{labels.kicker}</p>
         <ul className="projects-section__list" onMouseLeave={() => setActiveIndex(null)}>
           {projects.map((project, index) => (
             <li className="projects-section__item" key={project.slug}>
-              <Link
+              <button
                 className="projects-section__link"
-                href={`/projet/${project.slug}`}
+                type="button"
+                onClick={() => onProjectSelect?.(project)}
                 onMouseEnter={(event) => {
                   setActiveIndex(index);
                   handleProjectPointerMove(event);
@@ -90,7 +94,7 @@ export default function ProjectsSection() {
                   <span className="projects-section__title-line">{project.title}</span>
                 </span>
                 <span className="projects-section__meta">{project.year}</span>
-              </Link>
+              </button>
             </li>
           ))}
         </ul>

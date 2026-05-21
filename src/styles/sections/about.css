@@ -21,8 +21,18 @@
   height: auto;
   opacity: 0.62;
   pointer-events: none;
-  transform: translate(-40%, -51%);
+  transform: translate(
+    calc(-40% + var(--about-map-x, 0px)),
+    calc(-51% + var(--about-map-y, 0px))
+  );
+  transition: transform 0.65s cubic-bezier(0.39, 0.575, 0.565, 1);
   user-select: none;
+}
+
+.about-section__map-image {
+  display: block;
+  width: 100%;
+  height: auto;
 }
 
 .about-section__inner {
@@ -108,7 +118,10 @@
   .about-section__map {
     width: min(28rem, 84vw);
     opacity: 0.5;
-    transform: translate(-48%, -50%);
+    transform: translate(
+      calc(-48% + var(--about-map-x, 0px)),
+      calc(-50% + var(--about-map-y, 0px))
+    );
   }
 
   .about-section__copy p {

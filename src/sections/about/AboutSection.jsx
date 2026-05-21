@@ -1,22 +1,13 @@
-import Image from "next/image";
-
-import { site } from "@/data/site";
+import MauritiusMap from "@/features/about/MauritiusMap";
 import ScrollReveal from "@/features/scroll-reveal/ScrollReveal";
+import { getDictionary } from "@/lib/i18n";
 
-export default function AboutSection() {
+export default function AboutSection({ site = getDictionary("en").site }) {
   const { accent, body, sectionLabel, title } = site.sections.about;
 
   return (
     <section aria-label={sectionLabel} className="about-section">
-      <Image
-        className="about-section__map"
-        src="/image/svg/about-mauritius.svg"
-        width={538}
-        height={585}
-        alt=""
-        aria-hidden="true"
-        priority={false}
-      />
+      <MauritiusMap />
       <ScrollReveal className="about-section__inner">
         <div className="about-section__headline">
           <p className="about-section__label">{sectionLabel}</p>

@@ -12,10 +12,13 @@ const FractureStage = dynamic(
   { ssr: false },
 );
 
+let hasLoadedFaceScene = false;
+
 export default function HeroScene() {
-  const [isModelReady, setIsModelReady] = useState(false);
+  const [isModelReady, setIsModelReady] = useState(hasLoadedFaceScene);
   const [settings, setSettings] = useState(DEFAULT_SCENE_SETTINGS);
   const handleModelReady = useCallback(() => {
+    hasLoadedFaceScene = true;
     setIsModelReady(true);
   }, []);
 

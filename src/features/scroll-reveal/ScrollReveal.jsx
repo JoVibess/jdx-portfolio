@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 
 const WORD_SELECTOR = ".scroll-reveal__word";
+const WORD_STAGGER_MS = 40;
 
 export default function ScrollReveal({ as: Tag = "div", children, className = "" }) {
   const elementRef = useRef(null);
@@ -26,7 +27,7 @@ export default function ScrollReveal({ as: Tag = "div", children, className = ""
 
         const word = document.createElement("span");
         word.className = "scroll-reveal__word";
-        word.style.setProperty("--word-index", indexRef.current);
+        word.style.setProperty("--word-delay", `${indexRef.current * WORD_STAGGER_MS}ms`);
         word.textContent = part;
         fragment.appendChild(word);
         indexRef.current += 1;
@@ -37,11 +38,12 @@ export default function ScrollReveal({ as: Tag = "div", children, className = ""
 
     const splitElement = () => {
       const indexRef = { current: 0 };
-      const walker = document.createTreeWalker(element, NodeFilter.SHOW_TEXT, {
+      const nodeFilter = window.NodeFilter;
+      const walker = document.createTreeWalker(element, nodeFilter.SHOW_TEXT, {
         acceptNode(node) {
-          if (!node.textContent.trim()) return NodeFilter.FILTER_REJECT;
-          if (node.parentElement?.closest(WORD_SELECTOR)) return NodeFilter.FILTER_REJECT;
-          return NodeFilter.FILTER_ACCEPT;
+          if (!node.textContent.trim()) return nodeFilter.FILTER_REJECT;
+          if (node.parentElement?.closest(WORD_SELECTOR)) return nodeFilter.FILTER_REJECT;
+          return nodeFilter.FILTER_ACCEPT;
         },
       });
       const textNodes = [];
@@ -54,6 +56,11 @@ export default function ScrollReveal({ as: Tag = "div", children, className = ""
     };
 
     splitElement();
+
+    if (!("IntersectionObserver" in window)) {
+      element.classList.add("is-visible");
+      return undefined;
+    }
 
     const observer = new IntersectionObserver(
       ([entry]) => {

@@ -1,10 +1,13 @@
-import { skills } from "@/data/skills";
-import { site } from "@/data/site";
 import SkillsCarousel from "@/features/skills/SkillsCarousel";
 import ScrollReveal from "@/features/scroll-reveal/ScrollReveal";
+import { getDictionary } from "@/lib/i18n";
 
-export default function SkillsCarouselSection() {
-  const { kicker, sectionLabel, title } = site.sections.skills;
+export default function SkillsCarouselSection({
+  site = getDictionary("en").site,
+  skills = getDictionary("en").skills,
+}) {
+  const { kicker, sectionLabel, title, controlsLabel, previousLabel, nextLabel } =
+    site.sections.skills;
 
   return (
     <section aria-label={sectionLabel} className="skills-carousel-section">
@@ -13,7 +16,10 @@ export default function SkillsCarouselSection() {
         <h2 className="skills-carousel-section__title">{title}</h2>
         <span className="skills-carousel-section__separator"></span>
       </ScrollReveal>
-      <SkillsCarousel skills={skills} />
+      <SkillsCarousel
+        skills={skills}
+        labels={{ controlsLabel, previousLabel, nextLabel }}
+      />
     </section>
   );
 }

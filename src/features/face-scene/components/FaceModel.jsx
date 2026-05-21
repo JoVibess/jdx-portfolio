@@ -18,6 +18,7 @@ import {
   HOVER_RADIUS,
   MODEL_RESPONSIVE_SCALE,
   MODEL_RESPONSIVE_SCALE_BREAKPOINT,
+  MODEL_RESPONSIVE_Y_OFFSET,
   POINTER_EASE,
 } from "../constants";
 import { clamp, hashName, normalizeModel, smoothstep } from "../lib/fractureMath";
@@ -32,10 +33,9 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
   const viewportHeight = useThree((state) => state.viewport.height);
   const viewportPixelHeight = useThree((state) => state.size.height);
   const viewportWidth = useThree((state) => state.size.width);
-  const modelScale =
-    viewportWidth <= MODEL_RESPONSIVE_SCALE_BREAKPOINT
-      ? MODEL_RESPONSIVE_SCALE
-      : 1;
+  const isResponsiveModel = viewportWidth <= MODEL_RESPONSIVE_SCALE_BREAKPOINT;
+  const modelScale = isResponsiveModel ? MODEL_RESPONSIVE_SCALE : 1;
+  const responsiveModelYOffset = isResponsiveModel ? MODEL_RESPONSIVE_Y_OFFSET : 0;
   const headerWorldOffset =
     viewportPixelHeight > 0 ? (headerOffsetPx / viewportPixelHeight) * viewportHeight : 0;
   const stage = useRef(null);
@@ -371,7 +371,7 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
       ref={stage}
       position={[
         settings.modelPositionX,
-        settings.modelPositionY - headerWorldOffset,
+        settings.modelPositionY + responsiveModelYOffset - headerWorldOffset,
         settings.modelPositionZ,
       ]}
       rotation={[

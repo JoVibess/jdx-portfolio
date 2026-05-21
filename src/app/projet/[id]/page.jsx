@@ -1,25 +1,20 @@
 import { notFound } from "next/navigation";
 
-import ProjectHero from "@/features/projects/components/ProjectHero";
-import ProjectMeta from "@/features/projects/components/ProjectMeta";
-import { getProject, getProjectSlugs } from "@/features/projects/lib/getProject";
+import { getDictionary } from "@/lib/i18n";
+import ProjectDetailPage from "@/features/projects/components/ProjectDetailPage";
+import { getProject, getProjectRouteParams } from "@/features/projects/lib/getProject";
 
 export function generateStaticParams() {
-  return getProjectSlugs();
+  return getProjectRouteParams();
 }
 
 export default async function ProjectPage({ params }) {
-  const { slug } = await params;
-  const project = getProject(slug);
+  const { id } = await params;
+  const project = getProject(id);
 
   if (!project) {
     notFound();
   }
 
-  return (
-    <main>
-      <ProjectHero project={project} />
-      <ProjectMeta project={project} />
-    </main>
-  );
+  return <ProjectDetailPage project={project} dictionary={getDictionary("en")} locale="en" />;
 }

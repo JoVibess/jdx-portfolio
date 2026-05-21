@@ -168,6 +168,8 @@ html {
   min-height: 100%;
   background: var(--background);
   scrollbar-color: #050505 var(--background);
+  overflow-x: clip;
+  overscroll-behavior: none;
 }
 
 body {
@@ -176,6 +178,8 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-roc-grotesk);
+  overflow-x: clip;
+  overscroll-behavior: none;
 }
 
 ::selection {
@@ -185,4 +189,19 @@ body {
 
 a {
   text-decoration: none;
+}
+
+.language-switch {
+  position: absolute;
+  top: 50%;
+  right: clamp(1.25rem, 3vw, 3rem);
+  z-index: 4;
+  color: var(--foreground);
+  font-family: var(--font-roc-grotesk-wide);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  transform: translateY(-50%);
 }

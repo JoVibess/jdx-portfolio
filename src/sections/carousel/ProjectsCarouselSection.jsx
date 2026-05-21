@@ -1,9 +1,11 @@
-import { projects } from "@/data/projects";
-import { site } from "@/data/site";
 import ProjectCarousel from "@/features/projects/components/ProjectCarousel";
+import { getDictionary } from "@/lib/i18n";
 
-export default function ProjectsCarouselSection() {
-  const { sectionLabel, title } = site.sections.carousel;
+export default function ProjectsCarouselSection({
+  site = getDictionary("en").site,
+  projects = getDictionary("en").projects,
+}) {
+  const { sectionLabel, title } = site.sections.carousel || site.sections.projects;
 
   return (
     <section aria-label={sectionLabel} className="projects-carousel-section">

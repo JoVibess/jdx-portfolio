@@ -8,7 +8,7 @@ function clampIndex(value, max) {
   return Math.max(0, Math.min(value, max));
 }
 
-export default function SkillsCarousel({ skills }) {
+export default function SkillsCarousel({ skills, labels = {} }) {
   const viewportRef = useRef(null);
   const trackRef = useRef(null);
   const dragState = useRef({
@@ -148,11 +148,14 @@ export default function SkillsCarousel({ skills }) {
           ))}
         </div>
       </div>
-      <div className="skills-carousel__controls" aria-label="Skill carousel controls">
+      <div
+        className="skills-carousel__controls"
+        aria-label={labels.controlsLabel || "Skill carousel controls"}
+      >
         <button
           className="skills-carousel__control"
           type="button"
-          aria-label="Previous skill"
+          aria-label={labels.previousLabel || "Previous skill"}
           onClick={() => goTo(activeIndex - 1)}
         >
           ←
@@ -160,7 +163,7 @@ export default function SkillsCarousel({ skills }) {
         <button
           className="skills-carousel__control"
           type="button"
-          aria-label="Next skill"
+          aria-label={labels.nextLabel || "Next skill"}
           onClick={() => goTo(activeIndex + 1)}
         >
           →
