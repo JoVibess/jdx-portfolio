@@ -1,12 +1,14 @@
-import { getDictionary } from "@/lib/i18n";
-import HomeExperience from "@/features/home/HomeExperience";
+import { headers } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  const dictionary = getDictionary("en");
+function getPreferredLocale(acceptLanguage = "") {
+  return /(^|,)\s*fr(?:[-;,\s]|$)/i.test(acceptLanguage) ? "fr" : "en";
+}
 
-  return (
-    <main className="relative min-h-screen bg-background">
-      <HomeExperience dictionary={dictionary} locale="en" />
-    </main>
-  );
+export default async function Home() {
+  const requestHeaders = await headers();
+  const acceptLanguage = requestHeaders.get("accept-language") || "";
+  const locale = getPreferredLocale(acceptLanguage);
+
+  redirect(`/${locale}`);
 }

@@ -12,8 +12,18 @@ export default function LegalPage({
       <section className="legal-page__hero">
         <div className="legal-page__inner">
           <div className="legal-page__header">
-            <Link className="legal-page__back" href={homeHref}>
-              {backLabel}
+            <Link className="legal-page__back button-roll" href={homeHref}>
+              <span className="visually-hidden">{backLabel}</span>
+              <span className="button-roll__text" aria-hidden="true">
+                <span className="button-roll__text-item button-roll__text-item--base">
+                  <span className="legal-page__back-arrow" />
+                  {backLabel}
+                </span>
+                <span className="button-roll__text-item button-roll__text-item--clone">
+                  <span className="legal-page__back-arrow" />
+                  {backLabel}
+                </span>
+              </span>
             </Link>
             {languageSwitchHref ? (
               <Link className="legal-page__language-switch" href={languageSwitchHref}>

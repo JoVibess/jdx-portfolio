@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 
 import { getDictionary, isLocale, localeAlternates, supportedLocales } from "@/lib/i18n";
@@ -37,7 +38,9 @@ export default async function LocaleHome({ params }) {
 
   return (
     <main className="relative min-h-screen bg-background">
-      <HomeExperience dictionary={dictionary} locale={lang} />
+      <Suspense fallback={null}>
+        <HomeExperience dictionary={dictionary} locale={lang} />
+      </Suspense>
     </main>
   );
 }

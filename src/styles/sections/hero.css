@@ -17,11 +17,13 @@
 
 .hero-section__header-inner {
   position: relative;
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
   width: min(100%, 1440px);
   height: 100%;
   margin: 0 auto;
+  padding: 0 clamp(1.25rem, 3vw, 3rem);
 }
 
 .hero-section__logo {

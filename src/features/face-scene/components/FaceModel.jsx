@@ -24,6 +24,8 @@ import {
 } from "../constants";
 import { clamp, hashName, normalizeModel, smoothstep } from "../lib/fractureMath";
 
+const TOUCH_DRAG_THRESHOLD = 10;
+
 export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
   const fractured = useGLTF(FACE_MODEL_URL, DRACO_PATH);
   const fracturedScene = useMemo(() => fractured.scene.clone(true), [fractured.scene]);
@@ -47,6 +49,7 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
   const hoverTargetPoint = useRef(new Vector3(0, 0, 0));
   const localHoverPoint = useRef(new Vector3(0, 0, 0));
   const dragActive = useRef(false);
+  const activeTouchPointerId = useRef(null);
   const dragStartPointer = useRef({ x: 0, y: 0 });
   const dragStartRotation = useRef({ x: 0, y: 0 });
   const dragTargetRotation = useRef({ x: 0, y: 0 });
@@ -214,6 +217,50 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
         return;
       }
 
+      const isTouchPointer = event.pointerType === "touch";
+
+      if (isTouchPointer && activeTouchPointerId.current !== null) {
+        if (dragActive.current) {
+          const deltaX = event.clientX - dragStartPointer.current.x;
+          const deltaY = event.clientY - dragStartPointer.current.y;
+
+          hoverActive.current = false;
+          setCursorDragMode(true);
+          dragTargetRotation.current = {
+            x: clamp(
+              dragStartRotation.current.x + deltaY * DRAG_TILT_SPEED,
+              -DRAG_MAX_TILT,
+              DRAG_MAX_TILT,
+            ),
+            y: dragStartRotation.current.y + deltaX * DRAG_SPIN_SPEED,
+          };
+          event.preventDefault();
+          return;
+        }
+
+        const movedX = event.clientX - dragStartPointer.current.x;
+        const movedY = event.clientY - dragStartPointer.current.y;
+        const movedDistance = Math.hypot(movedX, movedY);
+
+        if (movedDistance >= TOUCH_DRAG_THRESHOLD) {
+          hoverActive.current = false;
+          setCursorDragMode(true);
+          dragActive.current = true;
+          dragStartPointer.current = { x: event.clientX, y: event.clientY };
+          dragStartRotation.current = {
+            x: modelGroup.current.rotation.x,
+            y: modelGroup.current.rotation.y,
+          };
+          dragTargetRotation.current = { ...dragStartRotation.current };
+          event.preventDefault();
+          return;
+        }
+
+        updatePointerPoint(event);
+        event.preventDefault();
+        return;
+      }
+
       if (dragActive.current) {
         const deltaX = event.clientX - dragStartPointer.current.x;
         const deltaY = event.clientY - dragStartPointer.current.y;
@@ -242,18 +289,29 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
     };
 
     const handlePointerLeave = () => {
+      if (activeTouchPointerId.current !== null) {
+        return;
+      }
       hoverActive.current = false;
       setCursorDragMode(false);
     };
 
     const stopDrag = (event) => {
-      if (!dragActive.current) {
+      const isTouchInteraction =
+        activeTouchPointerId.current !== null &&
+        (event?.pointerId === undefined || event.pointerId === activeTouchPointerId.current);
+
+      if (!dragActive.current && !isTouchInteraction) {
         return;
       }
 
       dragActive.current = false;
       hoverActive.current = false;
       setCursorDragMode(false);
+
+      if (isTouchInteraction) {
+        activeTouchPointerId.current = null;
+      }
 
       if (modelGroup.current) {
         dragTargetRotation.current = {
@@ -274,6 +332,24 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
       if (!modelGroup.current || !updatePointerPoint(event)) {
         hoverActive.current = false;
         setCursorDragMode(false);
+        return;
+      }
+
+      if (event.pointerType === "touch") {
+        activeTouchPointerId.current = event.pointerId ?? null;
+        dragActive.current = false;
+        hoverActive.current = true;
+        setCursorDragMode(false);
+        dragStartPointer.current = { x: event.clientX, y: event.clientY };
+        dragStartRotation.current = {
+          x: modelGroup.current.rotation.x,
+          y: modelGroup.current.rotation.y,
+        };
+        dragTargetRotation.current = { ...dragStartRotation.current };
+        if (event.pointerId !== undefined) {
+          canvas.setPointerCapture?.(event.pointerId);
+        }
+        event.preventDefault();
         return;
       }
 

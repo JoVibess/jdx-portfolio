@@ -1,9 +1,8 @@
 import LegalPage from "@/sections/legal/LegalPage";
 import { getDictionary } from "@/lib/i18n";
+import { getLegalMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Privacy policy | JDX",
-};
+export const metadata = getLegalMetadata({ locale: "en", type: "privacy-policy" });
 
 export default function PrivacyPolicyPage() {
   const dictionary = getDictionary("en");

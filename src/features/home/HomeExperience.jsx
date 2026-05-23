@@ -13,7 +13,7 @@ import ProjectsSection from "@/sections/projects/ProjectsSection";
 import SkillsCarouselSection from "@/sections/skills/SkillsCarouselSection";
 
 const PAGE_TRANSITION_SWAP_DELAY = 180;
-const PAGE_TRANSITION_END_DELAY = 920;
+const PAGE_TRANSITION_END_DELAY = 680;
 
 export default function HomeExperience({ dictionary = getDictionary("en"), locale = "en" }) {
   const router = useRouter();
@@ -77,6 +77,7 @@ export default function HomeExperience({ dictionary = getDictionary("en"), local
       {activeProject ? (
         <ProjectDetailPage
           dictionary={dictionary}
+          isPageTransitionActive={pageTransition.isActive}
           locale={locale}
           project={activeProject}
           onProjectSelect={handleProjectSelect}

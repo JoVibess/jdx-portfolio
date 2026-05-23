@@ -1,9 +1,8 @@
 import LegalPage from "@/sections/legal/LegalPage";
 import { getDictionary } from "@/lib/i18n";
+import { getLegalMetadata } from "@/lib/seo";
 
-export const metadata = {
-  title: "Legal notice | JDX",
-};
+export const metadata = getLegalMetadata({ locale: "en", type: "legal-notice" });
 
 export default function LegalNoticePage() {
   const dictionary = getDictionary("en");

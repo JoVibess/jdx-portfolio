@@ -9,11 +9,34 @@ export default function DebugGui({ onChange }) {
   useEffect(() => {
     const params = { ...DEFAULT_SCENE_SETTINGS };
     const gui = new GUI({ title: "Model Debug", width: 320 });
+    let isVisible = false;
     gui.domElement.style.position = "fixed";
     gui.domElement.style.top = "16px";
     gui.domElement.style.right = "16px";
     gui.domElement.style.zIndex = "100";
+    gui.domElement.style.display = "none";
     gui.close();
+
+    const toggleGui = () => {
+      isVisible = !isVisible;
+      gui.domElement.style.display = isVisible ? "" : "none";
+    };
+
+    const handleKeyDown = (event) => {
+      const target = event.target;
+
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable ||
+          ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName))
+      ) {
+        return;
+      }
+
+      if (event.key.toLowerCase() === "h") {
+        toggleGui();
+      }
+    };
 
     const sync = () => onChange({ ...params });
     const reset = () => {
@@ -125,8 +148,12 @@ export default function DebugGui({ onChange }) {
 
     lights.open();
     gui.add({ reset }, "reset").name("Reset values");
+    window.addEventListener("keydown", handleKeyDown);
 
-    return () => gui.destroy();
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      gui.destroy();
+    };
   }, [onChange]);
 
   return null;

@@ -49,6 +49,7 @@ export default function FractureStage({
       style={{
         cursor: "crosshair",
         pointerEvents: isVisible ? "auto" : "none",
+        touchAction: "none",
       }}
     >
       <Canvas

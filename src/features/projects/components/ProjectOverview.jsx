@@ -116,8 +116,7 @@ export default function ProjectOverview({ project }) {
                     {stack.icon ? (
                       <Image
                         src={stack.icon}
-                        alt=""
-                        aria-hidden="true"
+                        alt={`${stack.label} icon`}
                         width={34}
                         height={34}
                         className="project-overview__stack-icon"
