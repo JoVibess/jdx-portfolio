@@ -5,7 +5,7 @@ import { useEffect, useRef } from "react";
 const WORD_SELECTOR = ".scroll-reveal__word";
 const WORD_STAGGER_MS = 40;
 
-export default function ScrollReveal({ as: Tag = "div", children, className = "" }) {
+export default function ScrollReveal({ as: Tag = "div", children, className = "", ...props }) {
   const elementRef = useRef(null);
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export default function ScrollReveal({ as: Tag = "div", children, className = ""
   }, []);
 
   return (
-    <Tag ref={elementRef} className={`${className} scroll-reveal`}>
+    <Tag ref={elementRef} className={`${className} scroll-reveal`} {...props}>
       {children}
     </Tag>
   );

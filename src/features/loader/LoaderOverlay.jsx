@@ -67,7 +67,9 @@ export default function LoaderOverlay({ isVisible }) {
   const safeProgress = Number.isFinite(progress) ? progress : 0;
   const progressValue = isPreview
     ? previewProgress
-    : Math.min(99, Math.max(0, Math.round(safeProgress)));
+    : isVisible
+      ? Math.min(99, Math.max(0, Math.round(safeProgress)))
+      : 100;
   const hasError = !isPreview && errors.length > 0;
 
   const overlay = (

@@ -3,6 +3,8 @@
 import Image from "next/image";
 import { useEffect, useMemo, useRef, useState } from "react";
 
+import ScrollReveal from "@/features/scroll-reveal/ScrollReveal";
+
 const COLUMN_SPEEDS = [2, 3.3, 1.25, 3];
 const MOBILE_PARALLAX_SCALE = 0.16;
 const TABLET_PARALLAX_SCALE = 0.58;
@@ -25,6 +27,22 @@ function splitIntoColumns(images, columnCount) {
   return Array.from({ length: columnCount }, (_, columnIndex) =>
     images.filter((_, imageIndex) => imageIndex % columnCount === columnIndex),
   );
+}
+
+function getGalleryItemId(item, index) {
+  if (typeof item === "string") {
+    return item;
+  }
+
+  return item?.id || `gallery-item-${index}`;
+}
+
+function getGalleryItemSrc(item) {
+  if (typeof item === "string") {
+    return item;
+  }
+
+  return item?.src || null;
 }
 
 export default function ProjectParallaxGallery({ title, images = [] }) {
@@ -136,9 +154,13 @@ export default function ProjectParallaxGallery({ title, images = [] }) {
 
   return (
     <section className="project-gallery" aria-labelledby="project-gallery-title">
-      <h2 id="project-gallery-title" className="project-gallery__title">
+      <ScrollReveal
+        as="h2"
+        id="project-gallery-title"
+        className="project-gallery__title"
+      >
         {title}
-      </h2>
+      </ScrollReveal>
 
       <div ref={galleryRef} className="project-gallery__parallax" data-columns={columnCount}>
         {columns.map((column, columnIndex) => (
@@ -149,17 +171,27 @@ export default function ProjectParallaxGallery({ title, images = [] }) {
               columnRefs.current[columnIndex] = node;
             }}
           >
-            {column.map((src, imageIndex) => (
-              <div className="project-gallery__image" key={src}>
-                <Image
-                  src={src}
-                  alt={`${title} ${columnIndex + 1}-${imageIndex + 1}`}
-                  fill
-                  unoptimized
-                  sizes="(max-width: 900px) 48vw, (max-width: 1600px) 31vw, 22vw"
-                />
-              </div>
-            ))}
+            {column.map((item, imageIndex) => {
+              const src = getGalleryItemSrc(item);
+              const itemId = getGalleryItemId(item, imageIndex);
+
+              return (
+                <div
+                  className={`project-gallery__image${src ? "" : " project-gallery__image--placeholder"}`}
+                  key={itemId}
+                >
+                  {src ? (
+                    <Image
+                      src={src}
+                      alt={`${title} ${columnIndex + 1}-${imageIndex + 1}`}
+                      fill
+                      unoptimized
+                      sizes="(max-width: 900px) 48vw, (max-width: 1600px) 31vw, 22vw"
+                    />
+                  ) : null}
+                </div>
+              );
+            })}
           </div>
         ))}
       </div>

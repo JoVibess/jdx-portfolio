@@ -1,0 +1,119 @@
+.legal-page {
+  min-height: 100vh;
+  background: var(--background);
+  color: var(--foreground);
+}
+
+.legal-page__hero {
+  position: relative;
+  padding: clamp(6rem, 10vw, 9rem) clamp(1.25rem, 4vw, 3rem) clamp(3rem, 5vw, 4rem);
+  background: #d8d8d8;
+}
+
+.legal-page__inner {
+  width: min(100%, 1440px);
+  margin: 0 auto;
+}
+
+.legal-page__header {
+  position: absolute;
+  top: clamp(1.5rem, 3vw, 3rem);
+  left: 50%;
+  width: min(calc(100% - clamp(2.5rem, 8vw, 6rem)), 1440px);
+  z-index: 4;
+  min-height: 2.25rem;
+  transform: translateX(-50%);
+}
+
+.legal-page__back {
+  display: inline-flex;
+  position: absolute;
+  top: 50%;
+  left: 0;
+  color: rgba(0, 0, 0, 0.7);
+  font-family: var(--font-roc-grotesk);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  transform: translateY(-50%);
+}
+
+.legal-page__language-switch {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  color: var(--foreground);
+  font-family: var(--font-roc-grotesk-wide);
+  font-size: 0.9rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  text-transform: uppercase;
+  transform: translateY(-50%);
+}
+
+.legal-page__eyebrow {
+  margin: 0 0 0.85rem;
+  font-family: var(--font-roc-grotesk-wide);
+  font-size: clamp(0.85rem, 1vw, 1rem);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.legal-page__title {
+  margin: 0;
+  font-family: var(--font-roc-grotesk-wide);
+  font-size: clamp(3rem, 7vw, 6rem);
+  font-weight: 500;
+  line-height: 0.9;
+  letter-spacing: -0.08em;
+  text-transform: uppercase;
+}
+
+.legal-page__intro {
+  width: min(100%, 42rem);
+  margin: clamp(1.5rem, 2vw, 2rem) 0 0;
+  font-size: clamp(1rem, 1.15vw, 1.15rem);
+  line-height: 1.5;
+  letter-spacing: -0.015em;
+}
+
+.legal-page__content {
+  padding: clamp(3rem, 6vw, 5rem) clamp(1.25rem, 4vw, 3rem) clamp(5rem, 8vw, 7rem);
+}
+
+.legal-page__content-inner {
+  display: grid;
+  gap: clamp(2rem, 3vw, 2.8rem);
+}
+
+.legal-page__section {
+  display: grid;
+  gap: 0.85rem;
+}
+
+.legal-page__section h2 {
+  margin: 0;
+  font-family: var(--font-roc-grotesk-wide);
+  font-size: clamp(1.35rem, 2vw, 1.9rem);
+  font-weight: 500;
+  line-height: 0.95;
+  letter-spacing: -0.05em;
+  text-transform: uppercase;
+}
+
+.legal-page__section p {
+  margin: 0;
+  font-size: clamp(0.96rem, 1.05vw, 1.05rem);
+  line-height: 1.6;
+  letter-spacing: -0.012em;
+}
+
+@media (max-width: 720px) {
+  .legal-page__hero {
+    padding-top: 5.5rem;
+  }
+}

@@ -1,6 +1,6 @@
 import "./globals.css";
 import CustomCursor from "@/features/cursor/CustomCursor";
-import SiteFooter from "@/features/footer/SiteFooter";
+import SiteFooter from "@/sections/footer/SiteFooter";
 import { getDictionary, localeAlternates } from "@/lib/i18n";
 
 const { site } = getDictionary("en");

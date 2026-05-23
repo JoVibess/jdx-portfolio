@@ -11,10 +11,17 @@
 .hero-section__header {
   position: relative;
   z-index: 70;
-  display: grid;
-  place-items: center;
   height: var(--hero-header-height);
   background: var(--background);
+}
+
+.hero-section__header-inner {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: min(100%, 1440px);
+  height: 100%;
+  margin: 0 auto;
 }
 
 .hero-section__logo {
@@ -39,9 +46,16 @@
   background-size: cover;
 }
 
+.hero-section__panel-inner {
+  position: relative;
+  width: min(100%, 1440px);
+  height: 100%;
+  margin: 0 auto;
+}
+
 .hero-section__title {
   position: absolute;
-  left: clamp(2rem, 4vw, 4rem);
+  left: clamp(1.5rem, 3vw, 3rem);
   top: 43%;
   z-index: 2;
   display: grid;
@@ -54,7 +68,10 @@
   letter-spacing: -0.055em;
   text-transform: uppercase;
   transform: translateY(-50%);
-  @media(max-width: 1570px) {
+}
+
+@media (max-width: 1570px) {
+  .hero-section__title {
     top: 33%;
   }
 }
@@ -81,6 +98,11 @@
   .hero-section {
     --hero-header-height: 5rem;
     --hero-profile-overlap: 27rem;
+  }
+
+  .hero-section__header-inner,
+  .hero-section__panel-inner {
+    width: 100%;
   }
 
   .hero-section__title {

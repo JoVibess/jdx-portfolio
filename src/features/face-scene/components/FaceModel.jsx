@@ -18,6 +18,7 @@ import {
   HOVER_RADIUS,
   MODEL_RESPONSIVE_SCALE,
   MODEL_RESPONSIVE_SCALE_BREAKPOINT,
+  MODEL_RESPONSIVE_X_OFFSET,
   MODEL_RESPONSIVE_Y_OFFSET,
   POINTER_EASE,
 } from "../constants";
@@ -35,6 +36,7 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
   const viewportWidth = useThree((state) => state.size.width);
   const isResponsiveModel = viewportWidth <= MODEL_RESPONSIVE_SCALE_BREAKPOINT;
   const modelScale = isResponsiveModel ? MODEL_RESPONSIVE_SCALE : 1;
+  const responsiveModelXOffset = isResponsiveModel ? MODEL_RESPONSIVE_X_OFFSET : 0;
   const responsiveModelYOffset = isResponsiveModel ? MODEL_RESPONSIVE_Y_OFFSET : 0;
   const headerWorldOffset =
     viewportPixelHeight > 0 ? (headerOffsetPx / viewportPixelHeight) * viewportHeight : 0;
@@ -370,7 +372,7 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
     <group
       ref={stage}
       position={[
-        settings.modelPositionX,
+        settings.modelPositionX + responsiveModelXOffset,
         settings.modelPositionY + responsiveModelYOffset - headerWorldOffset,
         settings.modelPositionZ,
       ]}

@@ -10,7 +10,8 @@
     display: grid;
     justify-items: center;
     width: min(100% - 3rem, 52rem);
-    margin: 0 auto clamp(4.5rem, 8vw, 8rem);
+    margin-inline: auto;
+    margin-bottom: 4rem;
     text-align: center;
   }
 
@@ -34,6 +35,16 @@
     font-weight: 500;
     line-height: 0.98;
     letter-spacing: -0.02em;
+    text-transform: uppercase;
+  }
+
+  & .skills-carousel-section__title > .scroll-reveal__word {
+    color: var(--color-black);
+    font-family: var(--font-roc-grotesk);
+    font-size: clamp(1.75rem, 1.3922rem + 1.145vw, 2.125rem);
+    font-weight: 500;
+    line-height: 0.9;
+    letter-spacing: -0.065em;
     text-transform: uppercase;
   }
 }

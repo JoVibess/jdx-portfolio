@@ -10,5 +10,6 @@
 @import "../styles/features/skills.css";
 @import "../styles/features/cursor.css";
 @import "../styles/features/scroll-reveal.css";
-@import "../styles/features/footer.css";
 @import "../styles/features/project-detail.css";
+@import "../styles/sections/footer.css";
+@import "../styles/sections/legal.css";

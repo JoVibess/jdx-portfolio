@@ -32,9 +32,27 @@ export function normalizeModel(root) {
   const center = box.getCenter(new Vector3());
   const size = box.getSize(new Vector3());
   const scale = MODEL_HEIGHT / Math.max(size.x, size.y, size.z);
+  const targetCenter = new Vector3(0, -0.08, 0);
 
   root.scale.setScalar(scale);
-  root.position.set(-center.x * scale, -center.y * scale - 0.08, -center.z * scale);
+  root.updateMatrixWorld(true);
+
+  const scaledBox = new Box3().setFromObject(root);
+  const scaledCenter = scaledBox.getCenter(new Vector3());
+
+  root.position.set(
+    targetCenter.x - scaledCenter.x,
+    targetCenter.y - scaledCenter.y,
+    targetCenter.z - scaledCenter.z,
+  );
+  root.updateMatrixWorld(true);
+
+  // Apply one final correction pass so the pivot remains centered even after remounts/navigation.
+  const finalBox = new Box3().setFromObject(root);
+  const finalCenter = finalBox.getCenter(new Vector3());
+
+  root.position.add(targetCenter.sub(finalCenter));
+  root.updateMatrixWorld(true);
 
   return { center, size, scale };
 }

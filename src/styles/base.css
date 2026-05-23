@@ -205,3 +205,67 @@ a {
   text-transform: uppercase;
   transform: translateY(-50%);
 }
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.button-roll {
+  position: relative;
+  overflow: hidden;
+  perspective: 700px;
+}
+
+.button-roll__text {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.75s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.button-roll__text-item {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--button-roll-gap, 0);
+  white-space: nowrap;
+  transition:
+    transform 0.75s cubic-bezier(0.76, 0, 0.24, 1),
+    opacity 0.75s cubic-bezier(0.76, 0, 0.24, 1);
+}
+
+.button-roll__text-item--clone {
+  position: absolute;
+  inset: 0;
+  transform-origin: bottom center;
+  transform: rotateX(-90deg) translateY(0.75rem);
+  opacity: 0;
+}
+
+.button-roll:hover .button-roll__text,
+.button-roll:focus-visible .button-roll__text {
+  transform: rotateX(90deg);
+}
+
+.button-roll:hover .button-roll__text-item--base,
+.button-roll:focus-visible .button-roll__text-item--base {
+  transform: translateY(-100%);
+  opacity: 0;
+}
+
+.button-roll:hover .button-roll__text-item--clone,
+.button-roll:focus-visible .button-roll__text-item--clone {
+  opacity: 1;
+}

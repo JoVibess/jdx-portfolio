@@ -13,6 +13,7 @@ export default function DebugGui({ onChange }) {
     gui.domElement.style.top = "16px";
     gui.domElement.style.right = "16px";
     gui.domElement.style.zIndex = "100";
+    gui.close();
 
     const sync = () => onChange({ ...params });
     const reset = () => {
