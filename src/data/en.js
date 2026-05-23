@@ -332,7 +332,7 @@ export const en = {
       year: "2025",
       role: "Frontend Developer",
       status: "experimentation",
-      projectHref: "#",
+      projectHref: "https://moon-cycle.joeydecroix.com",
       ctaLabel: "View live",
       eyebrow: "PROJECT",
       summary:

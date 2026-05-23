@@ -2,7 +2,7 @@
 
 import { useFrame, useThree } from "@react-three/fiber";
 import { useAspect, useTexture } from "@react-three/drei";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { MathUtils, Vector2 } from "three";
 
 import { fragmentShader, vertexShader } from "./shader";
@@ -24,13 +24,7 @@ export default function DistortedProjectImage({ activeIndex, pointer, projects }
     () => (Array.isArray(loadedTextures) ? loadedTextures : [loadedTextures]),
     [loadedTextures],
   );
-  const [currentTexture, setCurrentTexture] = useState(textures[0]);
-  const uniforms = useRef({
-    uDelta: { value: new Vector2(0, 0) },
-    uAmplitude: { value: DISTORTION_AMPLITUDE },
-    uTexture: { value: textures[0] },
-    uAlpha: { value: 0 },
-  });
+  const activeTexture = textures[activeIndex ?? 0] || textures[0] || null;
 
   const firstImage = textures[0]?.image;
   const imageWidth = firstImage?.width || 1;
@@ -38,23 +32,19 @@ export default function DistortedProjectImage({ activeIndex, pointer, projects }
   const scale = useAspect(imageWidth, imageHeight, IMAGE_SCALE);
 
   useEffect(() => {
-    const texture = textures[activeIndex ?? 0];
+    if (!activeTexture) return;
 
-    if (!texture) return;
-    setCurrentTexture(texture);
-    uniforms.current.uTexture.value = texture;
     if (material.current) {
-      material.current.uniforms.uTexture.value = texture;
+      material.current.uniforms.uTexture.value = activeTexture;
       material.current.needsUpdate = true;
     }
-  }, [activeIndex, textures]);
+  }, [activeTexture]);
 
   useFrame(() => {
     if (!plane.current) return;
 
     const targetAlpha = activeIndex === null ? 0 : 1;
     alpha.current = MathUtils.lerp(alpha.current, targetAlpha, OPACITY_LERP);
-    uniforms.current.uAlpha.value = alpha.current;
     if (material.current) {
       material.current.uniforms.uAlpha.value = alpha.current;
     }
@@ -69,7 +59,6 @@ export default function DistortedProjectImage({ activeIndex, pointer, projects }
     smoothMouse.current.x = nextX;
     smoothMouse.current.y = nextY;
 
-    uniforms.current.uDelta.value.set(deltaX, -deltaY);
     if (material.current) {
       material.current.uniforms.uDelta.value.set(deltaX, -deltaY);
     }
@@ -82,12 +71,17 @@ export default function DistortedProjectImage({ activeIndex, pointer, projects }
     <mesh ref={plane} scale={scale}>
       <planeGeometry args={[1, 1, 15, 15]} />
       <shaderMaterial
-        key={currentTexture?.uuid}
+        key={activeTexture?.uuid}
         ref={material}
         fragmentShader={fragmentShader}
         depthWrite={false}
         transparent
-        uniforms={uniforms.current}
+        uniforms={{
+          uDelta: { value: new Vector2(0, 0) },
+          uAmplitude: { value: DISTORTION_AMPLITUDE },
+          uTexture: { value: activeTexture },
+          uAlpha: { value: 0 },
+        }}
         vertexShader={vertexShader}
       />
     </mesh>

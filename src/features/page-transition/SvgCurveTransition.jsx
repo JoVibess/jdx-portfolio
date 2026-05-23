@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef } from "react";
 
 const INITIAL_CURVE = 280;
 const TARGET_CURVE = -280;
@@ -16,10 +16,9 @@ export default function SvgCurveTransition({ playKey = 0, isActive = false }) {
   const pathRef = useRef(null);
   const frameRef = useRef(null);
   const timeoutRef = useRef(null);
-  const [isMounted, setIsMounted] = useState(false);
 
   useLayoutEffect(() => {
-    if (!isMounted || !loaderRef.current || !pathRef.current) return undefined;
+    if (!isActive || !loaderRef.current || !pathRef.current) return undefined;
 
     const setInitialPath = () => {
       const width = window.innerWidth;
@@ -38,13 +37,12 @@ export default function SvgCurveTransition({ playKey = 0, isActive = false }) {
     return () => {
       window.removeEventListener("resize", setInitialPath);
     };
-  }, [isMounted]);
+  }, [isActive]);
 
   useEffect(() => {
     if (!isActive) return undefined;
 
     let animationStart;
-    setIsMounted(true);
 
     const getLoaderHeight = () => {
       return loaderRef.current?.getBoundingClientRect().height || window.innerHeight + INITIAL_CURVE;
@@ -79,8 +77,6 @@ export default function SvgCurveTransition({ playKey = 0, isActive = false }) {
 
       if (elapsed < DURATION) {
         frameRef.current = window.requestAnimationFrame(animate);
-      } else {
-        setIsMounted(false);
       }
     };
 
@@ -101,7 +97,7 @@ export default function SvgCurveTransition({ playKey = 0, isActive = false }) {
     };
   }, [isActive, playKey]);
 
-  if (!isMounted) return null;
+  if (!isActive) return null;
 
   return (
     <div className="svg-curve-transition" ref={loaderRef} aria-hidden="true">

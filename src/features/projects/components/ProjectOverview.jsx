@@ -7,11 +7,11 @@ export default function ProjectOverview({ project }) {
   const overview = project.overview;
   const sectionRef = useRef(null);
 
-  if (!overview) {
-    return null;
-  }
-
   useEffect(() => {
+    if (!overview) {
+      return undefined;
+    }
+
     const section = sectionRef.current;
 
     if (!section) {
@@ -69,7 +69,11 @@ export default function ProjectOverview({ project }) {
       window.cancelAnimationFrame(frame);
       observer.disconnect();
     };
-  }, [project.slug]);
+  }, [overview, project.slug]);
+
+  if (!overview) {
+    return null;
+  }
 
   return (
     <section
