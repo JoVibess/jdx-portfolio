@@ -120,6 +120,8 @@ export default function ProjectDetailPage({
               <a
                 className="project-detail-hero__cta project-detail-hero__text-reveal"
                 href={project.projectHref}
+                target="_blank"
+                rel="noreferrer"
               >
                 <span>{project.ctaLabel || "View live"}</span>
                 <span aria-hidden="true" className="project-detail-hero__cta-arrow" />

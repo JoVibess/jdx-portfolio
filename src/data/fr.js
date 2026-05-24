@@ -16,7 +16,8 @@ export const fr = {
       about: {
         sectionLabel: "Profil",
         title: "Quand la logique rencontre",
-        accent: "la créativité",
+        accentPrefix: "la",
+        accent: "créativité",
         body: "Curieux et motivé, je travaille pour devenir développeur full-stack. Grandir à Maurice a nourri mon regard pour le design, tandis que mon parcours en biologie marine m'apporte logique, raisonnement et organisation dans mon travail.",
       },
       skills: {
@@ -268,7 +269,7 @@ export const fr = {
       year: "2026",
       role: "Développeur créatif",
       status: "refonte",
-      projectHref: "#",
+      projectHref: "https://newonebyc.ch",
       ctaLabel: "Voir en live",
       eyebrow: "PROJET",
       summary:

@@ -12,7 +12,7 @@
   position: relative;
   z-index: 90;
   height: var(--hero-header-height);
-  background: var(--background);
+  background: transparent;
 }
 
 .hero-section__header-inner {
@@ -94,6 +94,15 @@
   z-index: 80;
   height: calc(var(--hero-header-height) + var(--hero-panel-height) + var(--hero-profile-overlap));
   width: 100%;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+
+.face-scene-stage canvas {
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
 }
 
 @media (max-width: 860px) {

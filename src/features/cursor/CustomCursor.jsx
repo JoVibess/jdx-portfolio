@@ -27,6 +27,15 @@ export default function CustomCursor() {
     let hasMoved = false;
     let modelDragMode = false;
 
+    const revealCursor = () => {
+      if (hasMoved) {
+        return;
+      }
+
+      hasMoved = true;
+      circleElement.dataset.visible = "true";
+    };
+
     const updateMode = (isDomDragMode = false) => {
       circleElement.dataset.mode = modelDragMode || isDomDragMode ? "drag" : "";
     };
@@ -34,14 +43,12 @@ export default function CustomCursor() {
     const handleMouseMove = (event) => {
       mouse.x = event.clientX;
       mouse.y = event.clientY;
-
-      if (!hasMoved) {
-        hasMoved = true;
-        circleElement.dataset.visible = "true";
-      }
+      revealCursor();
     };
 
     const handlePointerOver = (event) => {
+      revealCursor();
+
       if (event.target.closest(".cursor-over")) {
         updateMode(true);
       }
@@ -59,6 +66,16 @@ export default function CustomCursor() {
 
     const handleCursorMode = (event) => {
       modelDragMode = event.detail?.mode === "drag";
+      updateMode(Boolean(document.elementFromPoint(mouse.x, mouse.y)?.closest(".cursor-over")));
+    };
+
+    const handlePageShow = () => {
+      revealCursor();
+      updateMode(Boolean(document.elementFromPoint(mouse.x, mouse.y)?.closest(".cursor-over")));
+    };
+
+    const handleWindowFocus = () => {
+      revealCursor();
       updateMode(Boolean(document.elementFromPoint(mouse.x, mouse.y)?.closest(".cursor-over")));
     };
 
@@ -96,6 +113,8 @@ export default function CustomCursor() {
     window.addEventListener("pointerover", handlePointerOver);
     window.addEventListener("pointerout", handlePointerOut);
     window.addEventListener("jdx:cursor-mode", handleCursorMode);
+    window.addEventListener("pageshow", handlePageShow);
+    window.addEventListener("focus", handleWindowFocus);
     frameId = window.requestAnimationFrame(tick);
 
     return () => {
@@ -103,6 +122,8 @@ export default function CustomCursor() {
       window.removeEventListener("pointerover", handlePointerOver);
       window.removeEventListener("pointerout", handlePointerOut);
       window.removeEventListener("jdx:cursor-mode", handleCursorMode);
+      window.removeEventListener("pageshow", handlePageShow);
+      window.removeEventListener("focus", handleWindowFocus);
       window.cancelAnimationFrame(frameId);
     };
   }, []);

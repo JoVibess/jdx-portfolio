@@ -268,7 +268,7 @@ export const en = {
       year: "2026",
       role: "Creative Developer",
       status: "redesign",
-      projectHref: "#",
+      projectHref: "https://newonebyc.ch",
       ctaLabel: "View live",
       eyebrow: "PROJECT",
       summary:

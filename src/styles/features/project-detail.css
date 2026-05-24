@@ -602,7 +602,7 @@
     width: 100%;
     max-width: none;
     margin: 0;
-    font-size: clamp(0.86rem, 0.92vw, 1rem);
+    font-size: clamp(0.86rem, 1vw, 1.02rem);
     font-weight: 400;
     line-height: 1.4;
     letter-spacing: -0.018em;

@@ -74,6 +74,20 @@
   text-transform: uppercase;
 }
 
+.about-section__title > .scroll-reveal__word,
+.about-section__title em > .scroll-reveal__word {
+  font-family: var(--font-roc-grotesk);
+  font-style: normal;
+  font-weight: 500;
+}
+
+.about-section__accent-highlight,
+.about-section__accent-highlight > .scroll-reveal__word {
+  font-family: var(--font-red-hat-display);
+  font-style: italic;
+  font-weight: 500;
+}
+
 .about-section__title em {
   color: #ffffff;
   font-family: var(--font-financier-display);

@@ -1,44 +1,4 @@
 @font-face {
-  font-family: "Exvolar";
-  src: url("/fonts/Exvolar.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Hellix";
-  src: url("/fonts/Hellix-Light.woff2") format("woff2");
-  font-weight: 300;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Hellix";
-  src: url("/fonts/Hellix-Medium.woff2") format("woff2");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Hellix";
-  src: url("/fonts/Hellix-LightItalic.woff2") format("woff2");
-  font-weight: 300;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Hellix";
-  src: url("/fonts/Hellix-MediumItalic.woff2") format("woff2");
-  font-weight: 500;
-  font-style: italic;
-  font-display: swap;
-}
-
-@font-face {
   font-family: "Financier Display";
   src: url("/fonts/FinancierDisplay/FinancierDisplay-Light.woff2") format("woff2");
   font-weight: 300;
@@ -55,8 +15,16 @@
 }
 
 @font-face {
-  font-family: "Mango Grotesque";
-  src: url("/fonts/MangoGrotesque/MangoGrotesque-Regular.woff2") format("woff2");
+  font-family: "Red Hat Display";
+  src: url("/fonts/RedHatDisplay/RedHatDisplay-MediumItalic.woff2") format("woff2");
+  font-weight: 500;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "Roc Grotesk";
+  src: url("/fonts/RocGrotesk/Kostic - Roc Grotesk Regular.woff2") format("woff2");
   font-weight: 400;
   font-style: normal;
   font-display: swap;
@@ -64,15 +32,7 @@
 
 @font-face {
   font-family: "Roc Grotesk";
-  src: url("/fonts/RocGrotesk/Roc Grotesk Regular.woff2") format("woff2");
-  font-weight: 400;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
-  font-family: "Roc Grotesk";
-  src: url("/fonts/RocGrotesk/Roc Grotesk Medium.woff2") format("woff2");
+  src: url("/fonts/RocGrotesk/Kostic - Roc Grotesk Medium.woff2") format("woff2");
   font-weight: 500;
   font-style: normal;
   font-display: swap;
@@ -80,7 +40,7 @@
 
 @font-face {
   font-family: "Roc Grotesk";
-  src: url("/fonts/RocGrotesk/Roc Grotesk Bold.woff2") format("woff2");
+  src: url("/fonts/RocGrotesk/Kostic - Roc Grotesk Bold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -88,7 +48,7 @@
 
 @font-face {
   font-family: "Roc Grotesk";
-  src: url("/fonts/RocGrotesk/Roc Grotesk Black.woff2") format("woff2");
+  src: url("/fonts/RocGrotesk/Kostic - Roc Grotesk Black.woff2") format("woff2");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -120,7 +80,7 @@
 
 @font-face {
   font-family: "Roc Grotesk Wide";
-  src: url("/fonts/RocGrotesk/Kostic - Roc Grotesk Wide Bold.woff2") format("woff2");
+  src: url("/fonts/RocGrotesk/Kostic - Roc Grotesk Wide ExtraBold.woff2") format("woff2");
   font-weight: 700;
   font-style: normal;
   font-display: swap;
@@ -128,7 +88,7 @@
 
 @font-face {
   font-family: "Roc Grotesk Wide";
-  src: url("/fonts/RocGrotesk/Kostic - Roc Grotesk Wide Black.woff2") format("woff2");
+  src: url("/fonts/RocGrotesk/Kostic - Roc Grotesk Wide Heavy.woff2") format("woff2");
   font-weight: 900;
   font-style: normal;
   font-display: swap;
@@ -145,10 +105,8 @@
   --surface: rgba(255, 255, 255, 0.36);
   --border-subtle: rgba(5, 5, 5, 0.16);
   --text-muted: rgba(5, 5, 5, 0.68);
-  --font-hellix: "Hellix", Arial, Helvetica, sans-serif;
   --font-financier-display: "Financier Display", Georgia, serif;
-  --font-exvolar: "Exvolar", Arial, Helvetica, sans-serif;
-  --font-mango-grotesque: "Mango Grotesque", Arial, Helvetica, sans-serif;
+  --font-red-hat-display: "Red Hat Display", Arial, Helvetica, sans-serif;
   --font-roc-grotesk: "Roc Grotesk", Arial, Helvetica, sans-serif;
   --font-roc-grotesk-wide: "Roc Grotesk Wide Medium", "Roc Grotesk Wide", Arial, Helvetica, sans-serif;
 }
