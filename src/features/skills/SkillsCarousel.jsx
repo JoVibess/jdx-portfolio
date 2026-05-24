@@ -82,11 +82,15 @@ export default function SkillsCarousel({ skills, labels = {} }) {
 
     const moved = event.clientX - dragState.current.startX;
     const threshold = Math.max(DRAG_THRESHOLD, step * 0.18);
-    const direction = Math.abs(moved) > threshold ? (moved < 0 ? 1 : -1) : 0;
+    const movedCardCount =
+      Math.abs(moved) > threshold && step > 0
+        ? Math.max(1, Math.round(Math.abs(moved) / step))
+        : 0;
+    const direction = movedCardCount > 0 ? (moved < 0 ? 1 : -1) : 0;
     const nextIndex =
       direction === 0 && dragState.current.clickedIndex !== null
         ? dragState.current.clickedIndex
-        : activeIndex + direction;
+        : activeIndex + direction * movedCardCount;
 
     dragState.current = {
       active: false,

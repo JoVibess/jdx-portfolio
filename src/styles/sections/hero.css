@@ -10,7 +10,7 @@
 
 .hero-section__header {
   position: relative;
-  z-index: 70;
+  z-index: 90;
   height: var(--hero-header-height);
   background: var(--background);
 }

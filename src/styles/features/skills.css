@@ -72,16 +72,19 @@
 
   & .skills-carousel__content {
     position: absolute;
-    left: 50%;
+    left: clamp(1.75rem, 4vw, 2.5rem);
+    right: clamp(1.75rem, 4vw, 2.5rem);
     top: 50%;
     display: grid;
     justify-items: center;
     gap: clamp(1rem, 1.8vw, 1.7rem);
-    width: min(82%, 18rem);
-    transform: translate(-50%, -50%);
+    width: auto;
+    transform: translateY(-50%);
   }
 
   & .skills-carousel__title {
+    display: block;
+    width: 100%;
     max-width: 100%;
     color: currentColor;
     font-family: var(--font-roc-grotesk);

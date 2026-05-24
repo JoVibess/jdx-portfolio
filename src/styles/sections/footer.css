@@ -245,6 +245,10 @@
     --footer-height: 100vh;
   }
 
+  .site-footer-eyes {
+    display: none;
+  }
+
   .site-footer__content {
     padding: 1.25rem 1.25rem 1rem;
   }

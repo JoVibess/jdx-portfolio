@@ -25,6 +25,7 @@ import {
 import { clamp, hashName, normalizeModel, smoothstep } from "../lib/fractureMath";
 
 const TOUCH_DRAG_THRESHOLD = 10;
+const TOUCH_SCROLL_LOCK_RATIO = 1.1;
 
 export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
   const fractured = useGLTF(FACE_MODEL_URL, DRACO_PATH);
@@ -220,44 +221,55 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
       const isTouchPointer = event.pointerType === "touch";
 
       if (isTouchPointer && activeTouchPointerId.current !== null) {
-        if (dragActive.current) {
-          const deltaX = event.clientX - dragStartPointer.current.x;
-          const deltaY = event.clientY - dragStartPointer.current.y;
+        const movedX = event.clientX - dragStartPointer.current.x;
+        const movedY = event.clientY - dragStartPointer.current.y;
+        const movedDistance = Math.hypot(movedX, movedY);
 
+        if (dragActive.current) {
           hoverActive.current = false;
           setCursorDragMode(true);
           dragTargetRotation.current = {
             x: clamp(
-              dragStartRotation.current.x + deltaY * DRAG_TILT_SPEED,
+              dragStartRotation.current.x + movedY * DRAG_TILT_SPEED,
               -DRAG_MAX_TILT,
               DRAG_MAX_TILT,
             ),
-            y: dragStartRotation.current.y + deltaX * DRAG_SPIN_SPEED,
+            y: dragStartRotation.current.y + movedX * DRAG_SPIN_SPEED,
           };
           event.preventDefault();
           return;
         }
 
-        const movedX = event.clientX - dragStartPointer.current.x;
-        const movedY = event.clientY - dragStartPointer.current.y;
-        const movedDistance = Math.hypot(movedX, movedY);
+        const absX = Math.abs(movedX);
+        const absY = Math.abs(movedY);
 
-        if (movedDistance >= TOUCH_DRAG_THRESHOLD) {
+        if (
+          movedDistance >= TOUCH_DRAG_THRESHOLD &&
+          absY > absX * TOUCH_SCROLL_LOCK_RATIO
+        ) {
+          hoverActive.current = false;
+          setCursorDragMode(false);
+          activeTouchPointerId.current = null;
+          return;
+        }
+
+        if (movedDistance >= TOUCH_DRAG_THRESHOLD && absX >= absY) {
           hoverActive.current = false;
           setCursorDragMode(true);
           dragActive.current = true;
-          dragStartPointer.current = { x: event.clientX, y: event.clientY };
           dragStartRotation.current = {
             x: modelGroup.current.rotation.x,
             y: modelGroup.current.rotation.y,
           };
           dragTargetRotation.current = { ...dragStartRotation.current };
+          if (event.pointerId !== undefined) {
+            canvas.setPointerCapture?.(event.pointerId);
+          }
           event.preventDefault();
           return;
         }
 
         updatePointerPoint(event);
-        event.preventDefault();
         return;
       }
 
@@ -346,10 +358,6 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
           y: modelGroup.current.rotation.y,
         };
         dragTargetRotation.current = { ...dragStartRotation.current };
-        if (event.pointerId !== undefined) {
-          canvas.setPointerCapture?.(event.pointerId);
-        }
-        event.preventDefault();
         return;
       }
 

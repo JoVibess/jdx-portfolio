@@ -153,6 +153,7 @@
 @media (max-width: 900px) {
   .legal-page__back {
     border: 0;
+    padding-left: 0;
   }
 
   .legal-page__back:hover,

@@ -790,6 +790,7 @@
 
   .project-detail-page__back {
     border: 0;
+    padding-left: 0;
   }
 
   .project-detail-page__back:hover,
