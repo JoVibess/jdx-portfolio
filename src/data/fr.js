@@ -273,7 +273,7 @@ export const fr = {
       ctaLabel: "Voir en live",
       eyebrow: "PROJET",
       summary:
-        "Refonte d’un site dédié à la biorésonance pour moderniser son image et améliorer ses performances. Le site a été reconstruit avec Vite afin d’obtenir un rendu plus rapide, plus fluide et plus adapté qu’un WordPress dans ce contexte. J’ai également réalisé les photos du site sur place, leur retouche sur Photoshop, ainsi que la vidéo d’introduction.",
+        "Refonte d’un site dédié à la biorésonance, avec une modernisation de son image et un changement complet d’architecture. Le projet consistait à faire évoluer un ancien site WordPress vers une base Next.js plus performante, plus fluide et mieux adaptée à ce contexte. J’ai également réalisé les photos du site sur place, leur retouche sur Photoshop, ainsi que la vidéo d’introduction.",
       overview: {
         eyebrow: "DÉVELOPPEMENT",
         title: "VUE D’ENSEMBLE DU PROJET",
@@ -298,9 +298,9 @@ export const fr = {
           },
           {
             number: "02",
-            title: "Intégration Vite et couche d’animation",
+            title: "Refonte technique, Next.js et couche d’animation",
             description:
-              "Après validation des maquettes, j’ai développé l’ensemble du site avec Vite. Ce choix m’a permis de travailler sur une base front légère, rapide et bien adaptée à un site vitrine peu amené à être édité par la cliente. Vite a apporté une structure simple et performante, que j’ai complétée par une couche d’animation pour renforcer la qualité perçue.",
+              "Après validation des maquettes, j’ai reconstruit l’ensemble du site en menant une refonte technique complète et un changement d’architecture, avec le passage d’un WordPress existant vers Next.js. Cette nouvelle base m’a permis d’obtenir un rendu plus rapide, plus fluide et plus cohérent avec les besoins du projet, que j’ai complété par une couche d’animation pour renforcer la qualité perçue.",
             image: null,
             color: "#ED6D40",
           },
@@ -322,7 +322,7 @@ export const fr = {
       cover: null,
       hero: null,
       gallery: [],
-      tags: ["Vite", "GSAP", "Figma"],
+      tags: ["Next.js", "GSAP", "Figma"],
     },
     {
       slug: "moon-cycle",

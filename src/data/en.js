@@ -272,7 +272,7 @@ export const en = {
       ctaLabel: "View live",
       eyebrow: "PROJECT",
       summary:
-        "Redesign of a bioresonance website to modernize its image and improve performance. The site was rebuilt with Vite to deliver a faster, smoother result and a more appropriate setup than WordPress in this context. I also handled the on-site photography, the Photoshop retouching, and the intro video.",
+        "Redesign of a bioresonance website, combining a refreshed visual identity with a full architectural overhaul. The project involved moving an older WordPress site to a Next.js foundation in order to deliver a faster, smoother, and more suitable experience for this context. I also handled the on-site photography, the Photoshop retouching, and the intro video.",
       overview: {
         eyebrow: "DEVELOPMENT",
         title: "PROJECT OVERVIEW",
@@ -297,9 +297,9 @@ export const en = {
           },
           {
             number: "02",
-            title: "Vite integration and motion layer",
+            title: "Technical redesign, Next.js, and motion layer",
             description:
-              "Once the wireframes had been validated, I developed the full website with Vite. This choice gave me a lightweight and fast front-end setup, well suited to a showcase website that the client did not plan to manage herself. Vite provided a simple and performant base, which I enhanced with a motion layer to improve the overall feel of the experience.",
+              "Once the wireframes had been validated, I rebuilt the entire website through a full technical redesign and architectural shift, moving from an existing WordPress setup to Next.js. This new foundation gave the project a faster, smoother, and more coherent front-end base, which I extended with a motion layer to improve the overall feel of the experience.",
             image: null,
             color: "#ED6D40",
           },
@@ -321,7 +321,7 @@ export const en = {
       cover: null,
       hero: null,
       gallery: [],
-      tags: ["Vite", "GSAP", "Figma"],
+      tags: ["Next.js", "GSAP", "Figma"],
     },
     {
       slug: "moon-cycle",
