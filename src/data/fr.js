@@ -60,14 +60,13 @@ export const fr = {
             paragraphs: [
               "Joey Decroix",
               "Contact : joeydecroix.pro@gmail.com",
-              "Adresse : à compléter si nécessaire",
+              "Adresse : 83 rue de Macruz, St-Pierre en Faucigny",
             ],
           },
           {
             title: "Hébergement",
             paragraphs: [
-              "Hébergeur : à compléter",
-              "Adresse de l’hébergeur : à compléter",
+              "Hébergeur : LWS",
             ],
           },
           {

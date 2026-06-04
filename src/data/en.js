@@ -59,14 +59,13 @@ export const en = {
             paragraphs: [
               "Joey Decroix",
               "Contact: joeydecroix.pro@gmail.com",
-              "Address: to be completed if needed",
+              "Address: 83 rue de Macruz, St-Pierre en Faucigny",
             ],
           },
           {
             title: "Hosting",
             paragraphs: [
-              "Hosting provider: to be completed",
-              "Hosting address: to be completed",
+              "Hosting provider: LWS",
             ],
           },
           {
