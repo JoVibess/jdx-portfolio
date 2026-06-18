@@ -26,8 +26,16 @@ import { clamp, hashName, normalizeModel, smoothstep } from "../lib/fractureMath
 
 const TOUCH_DRAG_THRESHOLD = 10;
 const TOUCH_SCROLL_LOCK_RATIO = 1.1;
+const ANIMATION_EPSILON = 0.0005;
+const HOVER_EPSILON = 0.001;
+const READY_DELAY_MS = 150;
 
-export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
+export default function FaceModel({
+  headerOffsetPx = 0,
+  interactionEnabled = true,
+  onReady,
+  settings,
+}) {
   const fractured = useGLTF(FACE_MODEL_URL, DRACO_PATH);
   const fracturedScene = useMemo(() => fractured.scene.clone(true), [fractured.scene]);
   const hitScene = useMemo(() => fractured.scene.clone(true), [fractured.scene]);
@@ -56,7 +64,7 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
   const dragTargetRotation = useRef({ x: 0, y: 0 });
   const cursorDragMode = useRef(false);
   const hasNotifiedReady = useRef(false);
-  const readyElapsed = useRef(0);
+  const readyTimeoutRef = useRef(null);
   const onReadyRef = useRef(onReady);
   const material = useRef(null);
   const fragmentMaterials = useRef([]);
@@ -128,7 +136,6 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
     dragStartRotation.current = { x: 0, y: 0 };
     dragTargetRotation.current = { x: 0, y: 0 };
     hasNotifiedReady.current = false;
-    readyElapsed.current = 0;
 
     if (modelGroup.current) {
       modelGroup.current.position.set(0, 0, 0);
@@ -202,7 +209,17 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
     hitTargets.current = raycastTargets;
     invalidate();
 
+    readyTimeoutRef.current = window.setTimeout(() => {
+      if (!hasNotifiedReady.current) {
+        hasNotifiedReady.current = true;
+        onReadyRef.current?.();
+      }
+    }, READY_DELAY_MS);
+
     return () => {
+      if (readyTimeoutRef.current) {
+        window.clearTimeout(readyTimeoutRef.current);
+      }
       fractureMaterials.forEach((fragmentMaterial) => fragmentMaterial.dispose());
       fractureMaterials.length = 0;
       fragmentMaterials.current = [];
@@ -212,6 +229,13 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
 
   useEffect(() => {
     const canvas = gl.domElement;
+
+    if (!interactionEnabled) {
+      hoverActive.current = false;
+      dragActive.current = false;
+      setCursorDragMode(false);
+      return undefined;
+    }
 
     const handlePointerMove = (event) => {
       if (!modelGroup.current) {
@@ -236,6 +260,7 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
             ),
             y: dragStartRotation.current.y + movedX * DRAG_SPIN_SPEED,
           };
+          invalidate();
           event.preventDefault();
           return;
         }
@@ -265,11 +290,13 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
           if (event.pointerId !== undefined) {
             canvas.setPointerCapture?.(event.pointerId);
           }
+          invalidate();
           event.preventDefault();
           return;
         }
 
         updatePointerPoint(event);
+        invalidate();
         return;
       }
 
@@ -287,6 +314,7 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
           ),
           y: dragStartRotation.current.y + deltaX * DRAG_SPIN_SPEED,
         };
+        invalidate();
         event.preventDefault();
         return;
       }
@@ -294,10 +322,12 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
       if (event.buttons !== 0) {
         hoverActive.current = false;
         setCursorDragMode(false);
+        invalidate();
         return;
       }
 
       updatePointerPoint(event);
+      invalidate();
     };
 
     const handlePointerLeave = () => {
@@ -306,6 +336,7 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
       }
       hoverActive.current = false;
       setCursorDragMode(false);
+      invalidate();
     };
 
     const stopDrag = (event) => {
@@ -331,6 +362,8 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
           y: modelGroup.current.rotation.y,
         };
       }
+
+      invalidate();
 
       if (
         event?.pointerId !== undefined &&
@@ -358,6 +391,7 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
           y: modelGroup.current.rotation.y,
         };
         dragTargetRotation.current = { ...dragStartRotation.current };
+        invalidate();
         return;
       }
 
@@ -373,6 +407,7 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
       if (event.pointerId !== undefined) {
         canvas.setPointerCapture?.(event.pointerId);
       }
+      invalidate();
       event.preventDefault();
     };
 
@@ -394,62 +429,85 @@ export default function FaceModel({ headerOffsetPx = 0, onReady, settings }) {
       window.removeEventListener("pointercancel", stopDrag);
       setCursorDragMode(false);
     };
-  }, [gl.domElement, setCursorDragMode, updatePointerPoint]);
+  }, [gl.domElement, interactionEnabled, invalidate, setCursorDragMode, updatePointerPoint]);
 
   useEffect(() => {
     invalidate();
   }, [fracturedScene, invalidate]);
 
   useFrame((_, delta) => {
+    let shouldContinue = false;
+
     if (modelGroup.current) {
       const dragEase = Math.min(1, delta * DRAG_ROTATION_EASE);
+      const rotationDiffX = dragTargetRotation.current.x - modelGroup.current.rotation.x;
+      const rotationDiffY = dragTargetRotation.current.y - modelGroup.current.rotation.y;
 
-      modelGroup.current.rotation.x +=
-        (dragTargetRotation.current.x - modelGroup.current.rotation.x) * dragEase;
-      modelGroup.current.rotation.y +=
-        (dragTargetRotation.current.y - modelGroup.current.rotation.y) * dragEase;
-    }
-
-    if (!hasNotifiedReady.current) {
-      readyElapsed.current += delta;
-      if (readyElapsed.current >= 1.0) {
-        hasNotifiedReady.current = true;
-        onReadyRef.current?.();
+      if (
+        Math.abs(rotationDiffX) > ANIMATION_EPSILON ||
+        Math.abs(rotationDiffY) > ANIMATION_EPSILON
+      ) {
+        modelGroup.current.rotation.x += rotationDiffX * dragEase;
+        modelGroup.current.rotation.y += rotationDiffY * dragEase;
+        shouldContinue = true;
+      } else {
+        modelGroup.current.rotation.x = dragTargetRotation.current.x;
+        modelGroup.current.rotation.y = dragTargetRotation.current.y;
       }
     }
 
-    hoverPoint.current.lerp(
-      hoverTargetPoint.current,
-      Math.min(1, delta * POINTER_EASE),
-    );
+    if (interactionEnabled) {
+      const hoverDistance = hoverPoint.current.distanceTo(hoverTargetPoint.current);
+
+      if (hoverDistance > HOVER_EPSILON) {
+        hoverPoint.current.lerp(
+          hoverTargetPoint.current,
+          Math.min(1, delta * POINTER_EASE),
+        );
+        shouldContinue = true;
+      } else {
+        hoverPoint.current.copy(hoverTargetPoint.current);
+      }
+    }
 
     if (dragActive.current) {
+      invalidate();
       return;
     }
 
-    fracturedScene.traverse((child) => {
-      if (!child.isMesh || !child.userData.origin) {
-        return;
-      }
+    if (interactionEnabled) {
+      fracturedScene.traverse((child) => {
+        if (!child.isMesh || !child.userData.origin) {
+          return;
+        }
 
-      const distance = hoverActive.current
-        ? child.userData.center.distanceTo(hoverPoint.current)
-        : Number.POSITIVE_INFINITY;
-      const targetInfluence = smoothstep(HOVER_RADIUS, HOVER_CORE, distance);
-      const easeSpeed = targetInfluence > child.userData.influence ? FRAGMENT_EASE_IN : FRAGMENT_EASE_OUT;
+        const distance = hoverActive.current
+          ? child.userData.center.distanceTo(hoverPoint.current)
+          : Number.POSITIVE_INFINITY;
+        const targetInfluence = smoothstep(HOVER_RADIUS, HOVER_CORE, distance);
+        const easeSpeed = targetInfluence > child.userData.influence ? FRAGMENT_EASE_IN : FRAGMENT_EASE_OUT;
+        const influenceDelta = targetInfluence - child.userData.influence;
 
-      child.userData.influence +=
-        (targetInfluence - child.userData.influence) * Math.min(1, delta * easeSpeed);
+        child.userData.influence += influenceDelta * Math.min(1, delta * easeSpeed);
 
-      const eased = child.userData.influence * child.userData.influence * (3 - 2 * child.userData.influence);
+        if (Math.abs(influenceDelta) > ANIMATION_EPSILON) {
+          shouldContinue = true;
+        }
 
-      child.position.copy(child.userData.origin).addScaledVector(child.userData.target, eased);
-      child.rotation.set(
-        child.userData.originRotation.x + child.userData.spin.x * eased,
-        child.userData.originRotation.y + child.userData.spin.y * eased,
-        child.userData.originRotation.z + child.userData.spin.z * eased,
-      );
-    });
+        const eased = child.userData.influence * child.userData.influence * (3 - 2 * child.userData.influence);
+
+        child.position.copy(child.userData.origin).addScaledVector(child.userData.target, eased);
+        child.rotation.set(
+          child.userData.originRotation.x + child.userData.spin.x * eased,
+          child.userData.originRotation.y + child.userData.spin.y * eased,
+          child.userData.originRotation.z + child.userData.spin.z * eased,
+        );
+      });
+    }
+
+    if (shouldContinue) {
+      invalidate();
+    }
   });
 
   return (

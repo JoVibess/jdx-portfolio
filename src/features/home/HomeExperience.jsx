@@ -7,6 +7,7 @@ import { getDictionary } from "@/lib/i18n";
 import FaceScenePreload from "@/features/face-scene/components/FaceScenePreload";
 import SvgCurveTransition from "@/features/page-transition/SvgCurveTransition";
 import ProjectDetailPage from "@/features/projects/components/ProjectDetailPage";
+import { getPublishedProjects } from "@/features/projects/lib/getProject";
 import AboutSection from "@/sections/about/AboutSection";
 import HeroSection from "@/sections/hero/HeroSection";
 import ProjectsSection from "@/sections/projects/ProjectsSection";
@@ -19,7 +20,8 @@ export default function HomeExperience({ dictionary = getDictionary("en"), local
   const router = useRouter();
   const pathname = usePathname() || `/${locale}`;
   const searchParams = useSearchParams();
-  const { projects, site, skills } = dictionary;
+  const { site, skills } = dictionary;
+  const projects = getPublishedProjects(dictionary.projects);
   const projectSlug = searchParams.get("project");
   const selectedProject =
     projects.find((project) => project.slug === projectSlug || project.aliases?.includes(projectSlug)) ||

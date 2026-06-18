@@ -6,6 +6,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { DEFAULT_SCENE_SETTINGS } from "@/features/face-scene/constants";
 import LoaderOverlay from "@/features/loader/LoaderOverlay";
 import SvgCurveTransition from "@/features/page-transition/SvgCurveTransition";
+import usePerformanceTier from "@/lib/usePerformanceTier";
 import DebugGui from "@/utils/DebugGui";
 
 const FractureStage = dynamic(
@@ -19,6 +20,7 @@ const INTRO_TRANSITION_DURATION = 920;
 export default function HeroScene() {
   const [isModelReady, setIsModelReady] = useState(hasLoadedFaceScene);
   const [settings, setSettings] = useState(DEFAULT_SCENE_SETTINGS);
+  const { allowInteractiveFaceScene, isLowPerf } = usePerformanceTier();
   const [introTransition, setIntroTransition] = useState({
     isActive: false,
     playKey: 0,
@@ -59,9 +61,11 @@ export default function HeroScene() {
 
   return (
     <>
-      <DebugGui onChange={setSettings} />
+      {process.env.NODE_ENV !== "production" ? <DebugGui onChange={setSettings} /> : null}
       <FractureStage
         isVisible={isModelReady}
+        interactionEnabled={allowInteractiveFaceScene}
+        isLowPerf={isLowPerf}
         onModelReady={handleModelReady}
         settings={settings}
       />

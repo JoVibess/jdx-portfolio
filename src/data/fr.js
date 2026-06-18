@@ -187,6 +187,7 @@ export const fr = {
     {
       slug: "groupe-cola",
       aliases: ["cola"],
+      isPublished: true,
       title: "Groupe COLA",
       featuredImage: "/image/projects/cola/groupeCola_first.webp",
       heroImage: "/image/projects/cola/mockup-macbook-groupe-cola.webp",
@@ -196,7 +197,7 @@ export const fr = {
       status: "en cours",
       eyebrow: "PROJET",
       summary:
-        "Le projet pour le groupe COLA visait à moderniser ses sites web et ceux de ses marques. Les anciens sites semblaient datés et n’étaient plus adaptés à l’image professionnelle du groupe. L’objectif était de présenter les marques et les produits de manière plus claire et plus moderne, tout en centralisant leur gestion. Sur ce projet, j’ai notamment développé la partie firewall, le système de recherche, les notifications, le développement front des différents sites ainsi que le middle office.",
+        "Le projet pour le groupe COLA visait à moderniser ses sites web et ceux de ses marques. Les anciens sites semblaient datés et n’étaient plus adaptés à l’image professionnelle du groupe. L’objectif était de présenter les marques et les produits de manière plus claire et plus moderne, tout en centralisant leur gestion. Ce projet a été réalisé pendant mon alternance chez Genesii. Sur ce projet, j’ai notamment développé la partie firewall, le système de recherche, les notifications, le développement front des différents sites ainsi que le middle office.",
       overview: {
         eyebrow: "DÉVELOPPEMENT",
         title: "VUE D'ENSEMBLE DU PROJET",

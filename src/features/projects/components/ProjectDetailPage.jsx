@@ -1,6 +1,7 @@
 import Image from "next/image";
 
 import LanguageSwitch from "@/features/language/LanguageSwitch";
+import { getPublishedProjects } from "@/features/projects/lib/getProject";
 import ProjectsSection from "@/sections/projects/ProjectsSection";
 import { getDictionary } from "@/lib/i18n";
 
@@ -160,7 +161,7 @@ export default function ProjectDetailPage({
       <ProjectParallaxGallery title={project.galleryTitle} images={project.galleryImages} />
       <ProjectsSection
         labels={dictionary.site.sections.projects}
-        projects={dictionary.projects}
+        projects={getPublishedProjects(dictionary.projects)}
         onProjectSelect={onProjectSelect}
       />
     </div>

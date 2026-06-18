@@ -186,6 +186,7 @@ export const en = {
     {
       slug: "groupe-cola",
       aliases: ["cola"],
+      isPublished: true,
       title: "Groupe COLA",
       featuredImage: "/image/projects/cola/groupeCola_first.webp",
       heroImage: "/image/projects/cola/mockup-macbook-groupe-cola.webp",
@@ -195,7 +196,7 @@ export const en = {
       status: "in process",
       eyebrow: "PROJECT",
       summary:
-        "The project for the COLA group aimed to modernize its websites and those of its brands. The old websites looked outdated and no longer matched the group’s professional image. The goal was to present the brands and products in a clearer, more modern way while centralizing their management. On this project, I notably developed the firewall layer, the search system, the notification system, the frontend of the different sites, and the middle office.",
+        "The project for the COLA group aimed to modernize its websites and those of its brands. The old websites looked outdated and no longer matched the group’s professional image. The goal was to present the brands and products in a clearer, more modern way while centralizing their management. This project was carried out during my apprenticeship at Genesii. On this project, I notably developed the firewall layer, the search system, the notification system, the frontend of the different sites, and the middle office.",
       overview: {
         eyebrow: "DEVELOPMENT",
         title: "PROJECT OVERVIEW",

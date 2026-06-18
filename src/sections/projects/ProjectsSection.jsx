@@ -3,11 +3,12 @@
 import { useEffect, useRef, useState } from "react";
 
 import ProjectDistortionScene from "@/features/project-distortion/ProjectDistortionScene";
+import { getPublishedProjects } from "@/features/projects/lib/getProject";
 import { getDictionary } from "@/lib/i18n";
 
 export default function ProjectsSection({
   labels = getDictionary("en").site.sections.projects,
-  projects = getDictionary("en").projects,
+  projects = getPublishedProjects(getDictionary("en").projects),
   onProjectSelect,
 }) {
   const sectionRef = useRef(null);
@@ -68,11 +69,13 @@ export default function ProjectsSection({
 
   return (
     <section ref={sectionRef} className="projects-section" aria-label={labels.sectionLabel}>
-      <ProjectDistortionScene
-        activeIndex={activeIndex}
-        pointer={previewPosition}
-        projects={projects}
-      />
+      {activeIndex !== null ? (
+        <ProjectDistortionScene
+          activeIndex={activeIndex}
+          pointer={previewPosition}
+          projects={projects}
+        />
+      ) : null}
       <div className="projects-section__inner">
         <p className="projects-section__kicker">{labels.kicker}</p>
         <ul className="projects-section__list" onMouseLeave={() => setActiveIndex(null)}>

@@ -8,6 +8,8 @@ import FaceModel from "./FaceModel";
 
 export default function FractureStage({
   isVisible = true,
+  interactionEnabled = true,
+  isLowPerf = false,
   onModelReady,
   settings,
 }) {
@@ -47,15 +49,15 @@ export default function FractureStage({
       ref={stageRef}
       className="face-scene-stage"
       style={{
-        cursor: "crosshair",
+        cursor: interactionEnabled ? "crosshair" : "default",
         pointerEvents: isVisible ? "auto" : "none",
         touchAction: "pan-y",
       }}
     >
       <Canvas
         camera={{ position: [0, 0, 4.85], fov: 34 }}
-        dpr={[1, 1.75]}
-        frameloop="always"
+        dpr={isLowPerf ? [1, 1.2] : [1, 1.5]}
+        frameloop="demand"
         gl={{
           alpha: true,
           antialias: true,
@@ -115,6 +117,7 @@ export default function FractureStage({
           <Suspense fallback={null}>
             <FaceModel
               headerOffsetPx={headerOffsetPx}
+              interactionEnabled={interactionEnabled}
               onReady={handleModelReady}
               settings={settings}
             />

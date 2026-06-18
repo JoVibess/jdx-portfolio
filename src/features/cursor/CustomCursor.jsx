@@ -2,6 +2,8 @@
 
 import { useEffect, useRef } from "react";
 
+import usePerformanceTier from "@/lib/usePerformanceTier";
+
 const CURSOR_SPEED = 0.17;
 const VELOCITY_MULTIPLIER = 6.8;
 const MAX_VELOCITY = 150;
@@ -10,6 +12,7 @@ const ROTATION_THRESHOLD = 30;
 
 export default function CustomCursor() {
   const circleRef = useRef(null);
+  const { allowCursorSqueeze } = usePerformanceTier();
 
   useEffect(() => {
     const circleElement = circleRef.current;
@@ -88,15 +91,22 @@ export default function CustomCursor() {
       previousMouse.x = mouse.x;
       previousMouse.y = mouse.y;
 
-      const mouseVelocity = Math.min(
-        Math.sqrt(deltaMouseX ** 2 + deltaMouseY ** 2) * VELOCITY_MULTIPLIER,
-        MAX_VELOCITY,
-      );
       const isDragMode = circleElement.dataset.mode === "drag";
-      const scaleValue = isDragMode ? 0 : (mouseVelocity / MAX_VELOCITY) * MAX_SQUEEZE;
-      currentScale += (scaleValue - currentScale) * CURSOR_SPEED;
+      let mouseVelocity = 0;
 
-      if (!isDragMode && mouseVelocity > ROTATION_THRESHOLD) {
+      if (allowCursorSqueeze) {
+        mouseVelocity = Math.min(
+          Math.sqrt(deltaMouseX ** 2 + deltaMouseY ** 2) * VELOCITY_MULTIPLIER,
+          MAX_VELOCITY,
+        );
+        const scaleValue = isDragMode ? 0 : (mouseVelocity / MAX_VELOCITY) * MAX_SQUEEZE;
+        currentScale += (scaleValue - currentScale) * CURSOR_SPEED;
+      } else {
+        currentScale = 0;
+        currentAngle = 0;
+      }
+
+      if (allowCursorSqueeze && !isDragMode && mouseVelocity > ROTATION_THRESHOLD) {
         currentAngle = Math.atan2(deltaMouseY, deltaMouseX) * (180 / Math.PI);
       }
 
@@ -126,7 +136,7 @@ export default function CustomCursor() {
       window.removeEventListener("focus", handleWindowFocus);
       window.cancelAnimationFrame(frameId);
     };
-  }, []);
+  }, [allowCursorSqueeze]);
 
   return (
     <div ref={circleRef} className="custom-cursor" aria-hidden="true">
