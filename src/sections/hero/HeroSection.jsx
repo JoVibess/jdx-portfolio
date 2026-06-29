@@ -26,6 +26,16 @@ export default function HeroSection({ site = getDictionary("en").site }) {
         </div>
       </header>
       <div className="hero-section__panel">
+        <Image
+          className="hero-section__panel-bg"
+          src="/image/webp/background-hero.webp"
+          alt=""
+          aria-hidden="true"
+          width={1728}
+          height={662}
+          priority
+          quality={75}
+        />
         <div className="hero-section__panel-inner">
           <h1 className="hero-section__title">
             <span className="hero-section__intro">{intro}</span>

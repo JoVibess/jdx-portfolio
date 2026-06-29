@@ -1,8 +1,12 @@
 "use client";
 
+import dynamic from "next/dynamic";
 import { useEffect, useRef, useState } from "react";
 
-import ProjectDistortionScene from "@/features/project-distortion/ProjectDistortionScene";
+const ProjectDistortionScene = dynamic(
+  () => import("@/features/project-distortion/ProjectDistortionScene"),
+  { ssr: false },
+);
 import { getPublishedProjects } from "@/features/projects/lib/getProject";
 import { getDictionary } from "@/lib/i18n";
 

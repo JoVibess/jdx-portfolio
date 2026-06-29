@@ -20,7 +20,12 @@ const INTRO_TRANSITION_DURATION = 920;
 export default function HeroScene() {
   const [isModelReady, setIsModelReady] = useState(hasLoadedFaceScene);
   const [settings, setSettings] = useState(DEFAULT_SCENE_SETTINGS);
+  const [loadProgress, setLoadProgress] = useState({ value: 0, errors: [] });
   const { allowInteractiveFaceScene, isLowPerf } = usePerformanceTier();
+
+  const handleProgress = useCallback((progress, errors) => {
+    setLoadProgress({ value: progress, errors });
+  }, []);
   const [introTransition, setIntroTransition] = useState({
     isActive: false,
     playKey: 0,
@@ -67,9 +72,14 @@ export default function HeroScene() {
         interactionEnabled={allowInteractiveFaceScene}
         isLowPerf={isLowPerf}
         onModelReady={handleModelReady}
+        onProgress={handleProgress}
         settings={settings}
       />
-      <LoaderOverlay isVisible={!isModelReady} />
+      <LoaderOverlay
+        isVisible={!isModelReady}
+        progress={loadProgress.value}
+        errors={loadProgress.errors}
+      />
       <SvgCurveTransition
         isActive={introTransition.isActive}
         playKey={introTransition.playKey}
