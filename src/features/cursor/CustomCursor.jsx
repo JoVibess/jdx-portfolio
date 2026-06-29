@@ -10,6 +10,20 @@ const MAX_VELOCITY = 150;
 const MAX_SQUEEZE = 0.5;
 const ROTATION_THRESHOLD = 30;
 
+function isSafariBrowser() {
+  if (typeof navigator === "undefined") {
+    return false;
+  }
+
+  const { userAgent, vendor } = navigator;
+
+  return (
+    vendor === "Apple Computer, Inc." &&
+    /Safari/i.test(userAgent) &&
+    !/Chrome|CriOS|FxiOS|EdgiOS|OPiOS|DuckDuckGo/i.test(userAgent)
+  );
+}
+
 export default function CustomCursor() {
   const circleRef = useRef(null);
   const { allowCursorSqueeze } = usePerformanceTier();
@@ -29,6 +43,7 @@ export default function CustomCursor() {
     let frameId = 0;
     let hasMoved = false;
     let modelDragMode = false;
+    const isSafari = isSafariBrowser();
 
     const revealCursor = () => {
       if (hasMoved) {
@@ -47,6 +62,14 @@ export default function CustomCursor() {
       mouse.x = event.clientX;
       mouse.y = event.clientY;
       revealCursor();
+
+      if (isSafari) {
+        circle.x = mouse.x;
+        circle.y = mouse.y;
+        previousMouse.x = mouse.x;
+        previousMouse.y = mouse.y;
+        circleElement.style.transform = `translate3d(${circle.x}px, ${circle.y}px, 0)`;
+      }
     };
 
     const handlePointerOver = (event) => {
@@ -125,7 +148,9 @@ export default function CustomCursor() {
     window.addEventListener("jdx:cursor-mode", handleCursorMode);
     window.addEventListener("pageshow", handlePageShow);
     window.addEventListener("focus", handleWindowFocus);
-    frameId = window.requestAnimationFrame(tick);
+    if (!isSafari) {
+      frameId = window.requestAnimationFrame(tick);
+    }
 
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
@@ -134,7 +159,9 @@ export default function CustomCursor() {
       window.removeEventListener("jdx:cursor-mode", handleCursorMode);
       window.removeEventListener("pageshow", handlePageShow);
       window.removeEventListener("focus", handleWindowFocus);
-      window.cancelAnimationFrame(frameId);
+      if (!isSafari) {
+        window.cancelAnimationFrame(frameId);
+      }
     };
   }, [allowCursorSqueeze]);
 
