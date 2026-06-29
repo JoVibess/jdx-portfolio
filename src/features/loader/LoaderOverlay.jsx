@@ -1,6 +1,5 @@
 "use client";
 
-import { useProgress } from "@react-three/drei";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
@@ -10,8 +9,7 @@ function easeOutCubic(value) {
   return 1 - Math.pow(1 - value, 3);
 }
 
-export default function LoaderOverlay({ isVisible }) {
-  const { errors, progress } = useProgress();
+export default function LoaderOverlay({ isVisible, progress = 0, errors = [] }) {
   const [portalRoot, setPortalRoot] = useState(null);
   const [previewRun, setPreviewRun] = useState(0);
   const [previewProgress, setPreviewProgress] = useState(0);

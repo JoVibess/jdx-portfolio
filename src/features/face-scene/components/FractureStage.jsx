@@ -1,16 +1,25 @@
 "use client";
 
 import { Canvas } from "@react-three/fiber";
-import { Preload, Stats } from "@react-three/drei";
-import { Suspense, useCallback, useLayoutEffect, useRef, useState } from "react";
+import { Preload, Stats, useProgress } from "@react-three/drei";
+import { Suspense, useCallback, useEffect, useLayoutEffect, useRef, useState } from "react";
 
 import FaceModel from "./FaceModel";
+
+function ProgressBridge({ onProgress }) {
+  const { progress, errors } = useProgress();
+  useEffect(() => {
+    onProgress?.(progress, errors);
+  }, [progress, errors, onProgress]);
+  return null;
+}
 
 export default function FractureStage({
   isVisible = true,
   interactionEnabled = true,
   isLowPerf = false,
   onModelReady,
+  onProgress,
   settings,
 }) {
   const stageRef = useRef(null);
@@ -54,6 +63,7 @@ export default function FractureStage({
         touchAction: "pan-y",
       }}
     >
+      <ProgressBridge onProgress={onProgress} />
       <Canvas
         camera={{ position: [0, 0, 4.85], fov: 34 }}
         dpr={isLowPerf ? [1, 1.2] : [1, 1.5]}

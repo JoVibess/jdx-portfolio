@@ -43,9 +43,16 @@
   z-index: 10;
   height: var(--hero-panel-height);
   overflow: hidden;
-  background-image: url("/image/webp/background-hero.webp");
-  background-position: center;
-  background-size: cover;
+}
+
+.hero-section__panel-bg {
+  position: absolute;
+  inset: 0;
+  object-fit: cover;
+  object-position: center;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
 }
 
 .hero-section__panel-inner {
